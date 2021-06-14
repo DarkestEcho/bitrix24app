@@ -42,13 +42,21 @@ class _AppContainerState extends State<AppContainer> {
 
   bool bIsSidebarOpen = false;
 
-  double xOffset = 60;
+  final double mainPagePaddingRight = 60;
+
+  late double xOffset;
   double yOffset = 0;
   double pageScale = 1;
 
   int selectedMenuItem = 0;
 
   String pageTitle = 'Лиды';
+
+  @override
+  void initState() {
+    super.initState();
+    xOffset = mainPagePaddingRight;
+  }
 
   @override
   void dispose() {
@@ -91,6 +99,7 @@ class _AppContainerState extends State<AppContainer> {
   Widget build(BuildContext context) {
     return Container(
       child: Stack(
+        alignment: AlignmentDirectional.topCenter,
         children: <Widget>[
           _getSideBar(context),
           _getMainPage(context),
@@ -105,12 +114,13 @@ class _AppContainerState extends State<AppContainer> {
       duration: Duration(milliseconds: 200),
       transform: Matrix4.translationValues(xOffset, yOffset, 1.0)
         ..scale(pageScale),
-      width: double.infinity,
-      height: double.infinity,
+      //width: double.infinity,
+      //height: double.infinity,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.red.shade300,
           borderRadius: BorderRadius.circular(bIsSidebarOpen ? 20 : 0)),
       child: Column(
+        //direction: Axis.horizontal,
         children: [
           Container(
             margin: EdgeInsets.only(top: 50),
@@ -123,7 +133,7 @@ class _AppContainerState extends State<AppContainer> {
                     setSidebarState();
                   },
                   child: Container(
-                    color: Colors.white,
+                    // color: Colors.white,
                     padding: EdgeInsets.all(20),
                     child: Icon(Icons.menu),
                   ),
@@ -136,6 +146,34 @@ class _AppContainerState extends State<AppContainer> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              // width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(right: mainPagePaddingRight),
+              decoration: BoxDecoration(
+                  color: Color(0xffeeeeee),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25))),
+              // padding: EdgeInsets.only(right: mainPagePaddingRight),
+              child: ListView.builder(
+                padding: EdgeInsets.only(top: 8),
+                itemCount: 50,
+                itemBuilder: (_, index) => Card(
+                  margin: EdgeInsets.symmetric(horizontal: 22, vertical: 5),
+                  elevation: 5,
+                  child: ListTile(
+                    title: Text(
+                      'Tile ${++index}',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              // color: Colors.deepOrange.shade300,
             ),
           )
         ],

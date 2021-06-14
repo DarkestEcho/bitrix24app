@@ -1,4 +1,4 @@
-import 'package:bitrix24/components/menu_item.dart';
+import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -146,7 +146,7 @@ class _AppContainerState extends State<AppContainer> {
                           setSidebarState();
                           setPageTitle();
                         },
-                        child: MenuItem(
+                        child: MenuItemWidget(
                           itemIcon: menuIcons[index],
                           itemText: menuItems[index],
                           selected: selectedMenuItem,
@@ -157,7 +157,7 @@ class _AppContainerState extends State<AppContainer> {
                   ),
                 ),
                 Container(
-                  child: MenuItem(
+                  child: MenuItemWidget(
                     itemIcon: 'icon_logout',
                     itemText: 'Выйти',
                     selected: selectedMenuItem,

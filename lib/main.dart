@@ -32,12 +32,7 @@ class AppContainer extends StatefulWidget {
 class _AppContainerState extends State<AppContainer> {
   final searchFocusNode = FocusNode();
 
-  final List<String> menuItems = [
-    'Home',
-    'Blogger',
-    'Add New Post',
-    'Settings'
-  ];
+  final List<String> menuItems = ['Лиды', 'Сделки', 'Контакты', 'Настройки'];
 
   final List<String> menuIcons = [
     'icon_home',
@@ -54,7 +49,7 @@ class _AppContainerState extends State<AppContainer> {
 
   int selectedMenuItem = 0;
 
-  String pageTitle = 'Homepage';
+  String pageTitle = 'Лиды';
 
   @override
   void dispose() {
@@ -79,16 +74,16 @@ class _AppContainerState extends State<AppContainer> {
   void setPageTitle() {
     switch (selectedMenuItem) {
       case 0:
-        pageTitle = 'Homepage';
+        pageTitle = 'Лиды';
         break;
       case 1:
-        pageTitle = 'Blogger';
+        pageTitle = 'Сделки';
         break;
       case 2:
-        pageTitle = 'Add New Post';
+        pageTitle = 'Контакты';
         break;
       case 3:
-        pageTitle = 'Settings';
+        pageTitle = 'Настройки';
         break;
     }
   }
@@ -129,7 +124,7 @@ class _AppContainerState extends State<AppContainer> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.all(20),
-                                hintText: 'Search here...',
+                                hintText: 'Найти ${_getMenuItemForSearch()}...',
                                 hintStyle: TextStyle(
                                   color: Color(0xFFB666666),
                                 ),
@@ -166,7 +161,7 @@ class _AppContainerState extends State<AppContainer> {
                 Container(
                   child: MenuItem(
                     itemIcon: 'icon_logout',
-                    itemText: 'Logout',
+                    itemText: 'Выйти',
                     selected: selectedMenuItem,
                     position: menuItems.length + 1,
                   ),
@@ -218,6 +213,19 @@ class _AppContainerState extends State<AppContainer> {
         ],
       ),
     );
+  }
+
+  String _getMenuItemForSearch() {
+    switch (selectedMenuItem) {
+      case 0:
+        return 'Лид';
+      case 1:
+        return 'Сделку';
+      case 2:
+        return 'Контакт';
+      default:
+        return '';
+    }
   }
 }
 

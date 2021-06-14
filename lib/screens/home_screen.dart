@@ -92,123 +92,130 @@ class _AppContainerState extends State<AppContainer> {
     return Container(
       child: Stack(
         children: <Widget>[
+          _getSideBar(context),
+          _getMainPage(context),
+        ],
+      ),
+    );
+  }
+
+  AnimatedContainer _getMainPage(BuildContext context) {
+    return AnimatedContainer(
+      curve: Curves.easeInOut,
+      duration: Duration(milliseconds: 200),
+      transform: Matrix4.translationValues(xOffset, yOffset, 1.0)
+        ..scale(pageScale),
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(bIsSidebarOpen ? 20 : 0)),
+      child: Column(
+        children: [
           Container(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
+            margin: EdgeInsets.only(top: 50),
+            height: 60,
+            child: Row(
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 50),
+                GestureDetector(
+                  onTap: () {
+                    bIsSidebarOpen = !bIsSidebarOpen;
+                    setSidebarState();
+                  },
                   child: Container(
-                    color: Color(0xFFB1F2B36),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            bIsSidebarOpen = true;
-                            setSidebarState();
-                            FocusScope.of(context)
-                                .requestFocus(searchFocusNode);
-                          },
-                          child: Container(
-                              padding: EdgeInsets.all(20),
-                              child:
-                                  Image.asset('assets/images/icon_search.png')),
-                        ),
-                        Container(
-                          child: Expanded(
-                            child: TextField(
-                              focusNode: searchFocusNode,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(20),
-                                hintText: 'Найти ${_getMenuItemForSearch()}...',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFB666666),
-                                ),
-                              ),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    color: Colors.white,
+                    padding: EdgeInsets.all(20),
+                    child: Icon(Icons.menu),
                   ),
                 ),
                 Container(
-                  child: Expanded(
-                    child: ListView.builder(
-                      itemCount: menuItems.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          bIsSidebarOpen = false;
-                          selectedMenuItem = index;
-                          setSidebarState();
-                          setPageTitle();
-                        },
-                        child: MenuItemWidget(
-                          menuItem: MenuItem(
-                              itemIcon: menuIcons[index],
-                              itemText: menuItems[index],
-                              selected: selectedMenuItem,
-                              position: index),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  child: MenuItemWidget(
-                    menuItem: MenuItem(
-                        itemIcon: 'icon_logout',
-                        itemText: 'Выйти',
-                        selected: selectedMenuItem,
-                        position: menuItems.length + 1),
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Text(
+                    pageTitle,
+                    style: TextStyle(fontSize: 18),
                   ),
                 ),
               ],
             ),
-          ),
-          AnimatedContainer(
-            curve: Curves.easeInOut,
-            duration: Duration(milliseconds: 200),
-            transform: Matrix4.translationValues(xOffset, yOffset, 1.0)
-              ..scale(pageScale),
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(bIsSidebarOpen ? 20 : 0)),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 50),
-                  height: 60,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          bIsSidebarOpen = !bIsSidebarOpen;
-                          setSidebarState();
-                        },
-                        child: Container(
-                          color: Colors.white,
-                          padding: EdgeInsets.all(20),
-                          child: Icon(Icons.menu),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 20, bottom: 20),
-                        child: Text(
-                          pageTitle,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Container _getSideBar(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 50),
+            child: Container(
+              color: Color(0xFFB1F2B36),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      bIsSidebarOpen = true;
+                      setSidebarState();
+                      FocusScope.of(context).requestFocus(searchFocusNode);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      child: Image.asset('assets/images/icon_search.png'),
+                    ),
                   ),
-                )
-              ],
+                  Container(
+                    child: Expanded(
+                      child: TextField(
+                        focusNode: searchFocusNode,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(20),
+                          hintText: 'Найти ${_getMenuItemForSearch()}...',
+                          hintStyle: TextStyle(
+                            color: Color(0xFFB666666),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Expanded(
+              child: ListView.builder(
+                itemCount: menuItems.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    bIsSidebarOpen = false;
+                    selectedMenuItem = index;
+                    setSidebarState();
+                    setPageTitle();
+                  },
+                  child: MenuItemWidget(
+                    menuItem: MenuItem(
+                        itemIcon: menuIcons[index],
+                        itemText: menuItems[index],
+                        selected: selectedMenuItem,
+                        position: index),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            child: MenuItemWidget(
+              menuItem: MenuItem(
+                  itemIcon: 'icon_logout',
+                  itemText: 'Выйти',
+                  selected: selectedMenuItem,
+                  position: menuItems.length + 1),
             ),
           ),
         ],

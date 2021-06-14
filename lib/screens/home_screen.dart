@@ -1,4 +1,5 @@
 import 'package:bitrix24/components/menu_item_widget.dart';
+import 'package:bitrix24/models/menu_item.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -147,10 +148,11 @@ class _AppContainerState extends State<AppContainer> {
                           setPageTitle();
                         },
                         child: MenuItemWidget(
-                          itemIcon: menuIcons[index],
-                          itemText: menuItems[index],
-                          selected: selectedMenuItem,
-                          position: index,
+                          menuItem: MenuItem(
+                              itemIcon: menuIcons[index],
+                              itemText: menuItems[index],
+                              selected: selectedMenuItem,
+                              position: index),
                         ),
                       ),
                     ),
@@ -158,10 +160,11 @@ class _AppContainerState extends State<AppContainer> {
                 ),
                 Container(
                   child: MenuItemWidget(
-                    itemIcon: 'icon_logout',
-                    itemText: 'Выйти',
-                    selected: selectedMenuItem,
-                    position: menuItems.length + 1,
+                    menuItem: MenuItem(
+                        itemIcon: 'icon_logout',
+                        itemText: 'Выйти',
+                        selected: selectedMenuItem,
+                        position: menuItems.length + 1),
                   ),
                 ),
               ],

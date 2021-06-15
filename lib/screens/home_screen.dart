@@ -1,3 +1,4 @@
+import 'package:bitrix24/components/list_view_crm.dart';
 import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:bitrix24/models/menu_item.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,10 @@ class _AppContainerState extends State<AppContainer> {
       //width: double.infinity,
       //height: double.infinity,
       decoration: BoxDecoration(
-          color: Colors.red.shade300,
+          image: DecorationImage(
+              fit: BoxFit.fill,
+              image: AssetImage('assets/images/wp_3_rocks.jpg')),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(bIsSidebarOpen ? 20 : 0)),
       child: Column(
         //direction: Axis.horizontal,
@@ -149,32 +153,7 @@ class _AppContainerState extends State<AppContainer> {
             ),
           ),
           Expanded(
-            child: Container(
-              // width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: mainPagePaddingRight),
-              decoration: BoxDecoration(
-                  color: Color(0xffeeeeee),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25))),
-              // padding: EdgeInsets.only(right: mainPagePaddingRight),
-              child: ListView.builder(
-                padding: EdgeInsets.only(top: 8),
-                itemCount: 50,
-                itemBuilder: (_, index) => Card(
-                  margin: EdgeInsets.symmetric(horizontal: 22, vertical: 5),
-                  elevation: 5,
-                  child: ListTile(
-                    title: Text(
-                      'Tile ${++index}',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-              // color: Colors.deepOrange.shade300,
-            ),
+            child: ListViewCrm(mainPagePaddingRight: mainPagePaddingRight),
           )
         ],
       ),

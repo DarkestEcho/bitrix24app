@@ -1,3 +1,4 @@
+import 'package:bitrix24/components/stage_listmenu_button.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:flutter/material.dart';
 
@@ -49,80 +50,34 @@ class _ListViewCrmState extends State<ListViewCrm> {
               padding: EdgeInsets.only(left: 20, right: 12),
               scrollDirection: Axis.horizontal,
               children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 8,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Новая',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                  ),
+                StageMenuButton(
+                  stageName: 'Новая',
+                  color: Colors.blue,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 8,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Подготовка документов',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                  ),
+                StageMenuButton(
+                  stageName: 'Подготовка документов',
+                  color: Colors.lightBlue,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 8,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Счет на предоплату',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                  ),
+                StageMenuButton(
+                  stageName: 'Счет на предоплату',
+                  color: Colors.cyan,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 8,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'В работе',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                  ),
+                StageMenuButton(
+                  stageName: 'В работе',
+                  color: Colors.teal.shade400,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    right: 8,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Финальный счет',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                  ),
+                StageMenuButton(
+                  stageName: 'Финальный счет',
+                  color: Colors.orange,
+                ),
+                StageMenuButton(
+                  stageName: 'Сделка провалена',
+                  color: Colors.red,
+                  textColor: Colors.white,
+                ),
+                StageMenuButton(
+                  stageName: 'Сделка успешна',
+                  color: Colors.green,
                 ),
               ],
             ),

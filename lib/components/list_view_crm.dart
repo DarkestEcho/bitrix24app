@@ -44,22 +44,86 @@ class _ListViewCrmState extends State<ListViewCrm> {
       child: Column(
         children: [
           Container(
-            height: 50,
+            height: 40,
             child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.only(left: 20, right: 12),
               scrollDirection: Axis.horizontal,
               children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Новая'),
-                  style: ButtonStyle(elevation: MaterialStateProperty.all(8)),
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Новая',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8),
+                    ),
+                  ),
                 ),
-                TextButton(onPressed: () {}, child: Text('Новая')),
-                TextButton(
-                    onPressed: () {}, child: Text('Подготовка документов')),
-                TextButton(onPressed: () {}, child: Text('Счет на предоплату')),
-                TextButton(onPressed: () {}, child: Text('В работе')),
-                TextButton(onPressed: () {}, child: Text('Финальный счет')),
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Подготовка документов',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Счет на предоплату',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'В работе',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    right: 8,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Финальный счет',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -78,14 +142,34 @@ class _ListViewCrmState extends State<ListViewCrm> {
                           padding: EdgeInsets.only(top: 8),
                           itemCount: snapshot.data!.deals.length,
                           itemBuilder: (_, index) => Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                             margin: EdgeInsets.symmetric(
                                 horizontal: 22, vertical: 5),
                             elevation: 5,
                             child: ListTile(
                                 isThreeLine: true,
-                                title: Text(
-                                  '${snapshot.data!.deals[index].title} \n${snapshot.data!.deals.length}\n ${snapshot.data!.deals[index].stageId}',
-                                  textAlign: TextAlign.left,
+                                title: Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.start,
+                                  direction: Axis.vertical,
+                                  children: [
+                                    Text(
+                                      '${snapshot.data!.deals[index].title} \n${snapshot.data!.deals.length}',
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      // color: Colors.blue,
+                                      child: Text(
+                                        '${snapshot.data!.deals[index].stageId}',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 subtitle: Text(
                                     '${snapshot.data!.deals[index].opportunity}\n${snapshot.data!.deals[index].dataCreate}')),

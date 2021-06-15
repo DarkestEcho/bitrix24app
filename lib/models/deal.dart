@@ -9,7 +9,7 @@ class Deal {
   String stageId;
   String? probability;
   String currencyId;
-  String opportunity;
+  double opportunity;
   String? leadId;
   String? contactId;
 
@@ -36,7 +36,7 @@ class Deal {
         typeId: json['TYPE_ID'] ?? '',
         stageId: json['STAGE_ID'],
         currencyId: json['CURRENCY_ID'],
-        opportunity: json['OPPORTUNITY'] ?? '',
+        opportunity: double.parse(json['OPPORTUNITY'] ?? '0'),
         probability: json['PROBABILITY'],
         contactId: json['CONTACT_ID'],
         leadId: json['LEAD_ID'],
@@ -47,22 +47,39 @@ class Deal {
 
 class DealsList {
   List<Deal> deals;
-  DealsList({required this.deals});
+  int _total;
+  int? _next;
+
+  int get getTotal => _total;
+  int get getNext => _next ?? 0;
+
+  set setNext(int val) => this._next = val;
+
+  void updateTotal() {
+    _total += 50;
+  }
+
+  DealsList({required this.deals, required int total, int? next})
+      : this._total = total,
+        this._next = next;
 
   factory DealsList.fromJson(Map<String, dynamic> json) {
     var dealsJson = json['result'] as List;
-
+    print(json['total'] is int);
     List<Deal> dealsList = dealsJson.map((i) => Deal.fromJson(i)).toList();
-    return DealsList(deals: dealsList);
+    return DealsList(
+        deals: dealsList, total: json['total'], next: json['next']);
   }
 }
 
-Future<DealsList> getDealsList() async {
+Future<DealsList> getDealsList(
+    {required int start, DealsList? dealsList}) async {
   const url =
       'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/crm.deal.list';
 
   var data = <String, dynamic>{
-    'order': {'ID': 'DESC'},
+    'start': start.toString(),
+    'order': {'DATE_MODIFY': 'DESC'},
     'select': ['*', 'UF_*']
   };
   final response = await http.post(Uri.parse(url),
@@ -70,6 +87,12 @@ Future<DealsList> getDealsList() async {
       headers: {'Content-Type': 'application/json; charset=UTF-8'});
   // final response = await http.get(Uri.parse(url));
   if (response.statusCode == 200) {
+    if (dealsList != null) {
+      DealsList newDealsList = DealsList.fromJson(json.decode(response.body));
+      newDealsList.deals.insertAll(0, dealsList.deals);
+
+      return newDealsList;
+    }
     return DealsList.fromJson(json.decode(response.body));
   } else {
     throw Exception('Error; ${response.reasonPhrase}');

@@ -1,3 +1,4 @@
+import 'package:bitrix24/components/diamond_floating_button.dart';
 import 'package:bitrix24/components/stage_buttons_menu.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,12 @@ class ListViewCrm extends StatefulWidget {
 
 class _ListViewCrmState extends State<ListViewCrm> {
   late ScrollController scrollController;
-  late Future<DealsList> dealsList;
+  late Future<DealsList> dealsListFuture;
+
   @override
   void initState() {
     super.initState();
-    dealsList = getDealsList();
+    dealsListFuture = getDealsList(start: 0);
     scrollController = ScrollController()..addListener(_scrollListener);
   }
 
@@ -46,19 +48,20 @@ class _ListViewCrmState extends State<ListViewCrm> {
         children: [
           StageButtonsMenu(),
           Expanded(
-            child: Container(
-              child: FutureBuilder<DealsList>(
-                  future: dealsList,
+            child: Stack(alignment: Alignment.bottomRight, children: [
+              FutureBuilder<DealsList>(
+                  future: dealsListFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      List<Deal> dealsList = snapshot.data!.deals;
                       return GestureDetector(
-                        onTapUp: (context) => print(context.localPosition),
-                        onVerticalDragDown: (context) => _updateList(),
+                        onVerticalDragDown: (_) =>
+                            _updateList(dealsList: snapshot.data),
                         child: ListView.builder(
                           controller: scrollController,
                           physics: BouncingScrollPhysics(),
                           padding: EdgeInsets.only(top: 8),
-                          itemCount: snapshot.data!.deals.length,
+                          itemCount: dealsList.length,
                           itemBuilder: (_, index) => Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
@@ -72,7 +75,7 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                   direction: Axis.vertical,
                                   children: [
                                     Text(
-                                      '${snapshot.data!.deals[index].title} \n${snapshot.data!.deals.length}',
+                                      '${dealsList[index].title} \n${dealsList.length}',
                                       textAlign: TextAlign.left,
                                     ),
                                     Container(
@@ -101,7 +104,14 @@ class _ListViewCrmState extends State<ListViewCrm> {
                       child: CircularProgressIndicator(),
                     );
                   }),
-            ),
+              DiamandFloatingButton(
+                onPressed: () {
+                  setState(() {
+                    //dealsListFuture = getDealsList(start: 0);
+                  });
+                },
+              ),
+            ]),
           ),
         ],
       ),
@@ -118,12 +128,31 @@ class _ListViewCrmState extends State<ListViewCrm> {
 
   void _addListItems() {}
 
-  void _updateList() {
+  void _updateList({DealsList? dealsList}) {
     if (scrollController.position.extentAfter >=
         (scrollController.position.maxScrollExtent)) {
       print('Update list');
       setState(() {
-        dealsList = getDealsList();
+        dealsListFuture = getDealsList(start: 0);
+      });
+      return;
+    }
+    if (scrollController.position.extentAfter ==
+        (scrollController.position.minScrollExtent)) {
+      print('Update list');
+
+      setState(() {
+        // if (dealsList == null) {
+        //   dealsListFuture = getDealsList(start: 0);
+        //   return;
+        // }
+        if (dealsList != null) {
+          if (dealsList.getNext == 0) {
+            return;
+          }
+          dealsListFuture =
+              getDealsList(start: dealsList.getNext, dealsList: dealsList);
+        }
       });
     }
   }

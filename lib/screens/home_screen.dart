@@ -14,6 +14,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // floatingActionButton: FloatingActionButton(
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+      //   onPressed: () {},
+      // ),
       body: Container(
         color: mainColor,
         child: AppContainer(),

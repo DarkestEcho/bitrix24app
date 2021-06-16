@@ -18,12 +18,22 @@ class ListViewCrm extends StatefulWidget {
 class _ListViewCrmState extends State<ListViewCrm> {
   late ScrollController scrollController;
   late Future<DealsList> dealsListFuture;
+  late Map<String, bool> stageMenuButtons;
 
   @override
   void initState() {
     super.initState();
     dealsListFuture = getDealsList(start: 0);
     scrollController = ScrollController()..addListener(_scrollListener);
+    stageMenuButtons = {
+      'Новая': true,
+      'Подготовка документов': true,
+      'Счет на предоплату': true,
+      'В работе': true,
+      'Финальный счет': true,
+      'Сделка провалена': true,
+      'Сделка успешна': true,
+    };
   }
 
   @override
@@ -46,7 +56,14 @@ class _ListViewCrmState extends State<ListViewCrm> {
       // padding: EdgeInsets.only(right: mainPagePaddingRight),
       child: Column(
         children: [
-          StageButtonsMenu(),
+          StageButtonsMenu(
+            function: (value) {
+              setState(() {
+                bool _b = stageMenuButtons[value] ?? false;
+                stageMenuButtons[value] = !_b;
+              });
+            },
+          ),
           Expanded(
             child: Stack(alignment: Alignment.bottomRight, children: [
               FutureBuilder<DealsList>(
@@ -106,9 +123,10 @@ class _ListViewCrmState extends State<ListViewCrm> {
                   }),
               DiamandFloatingButton(
                 onPressed: () {
-                  setState(() {
-                    //dealsListFuture = getDealsList(start: 0);
-                  });
+                  // setState(() {
+                  print(stageMenuButtons);
+                  //dealsListFuture = getDealsList(start: 0);
+                  // });
                 },
               ),
             ]),

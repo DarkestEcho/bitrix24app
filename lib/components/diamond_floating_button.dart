@@ -18,10 +18,11 @@ class DiamandFloatingButton extends StatelessWidget {
           width: 70,
           height: 70,
           child: FloatingActionButton(
+            elevation: 8,
             shape: BeveledRectangleBorder(
                 side: BorderSide(width: 3, color: Color(0xFFB151E26)),
                 borderRadius: BorderRadius.circular(33)),
-            backgroundColor: Colors.deepOrange.shade400, //Color(0xFFB1F2B36),
+            backgroundColor: Color(0xddff7043), //Color(0xFFB1F2B36),
             child: Icon(
               Icons.add_rounded,
               color: Colors.white,

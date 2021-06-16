@@ -1,6 +1,7 @@
 import 'package:bitrix24/components/diamond_floating_button.dart';
 import 'package:bitrix24/components/refresh_widget.dart';
 import 'package:bitrix24/components/stage_buttons_menu.dart';
+import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,9 @@ class _ListViewCrmState extends State<ListViewCrm> {
   late ScrollController scrollController;
   late Future<DealsList> dealsListFuture;
   late Map<String, List> stageMenuButtons;
+
+  Bitrix24 bitrix24 = Bitrix24(
+      weebhook: 'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/');
   Map<String, Color> stageColor = {
     'Новая': Colors.blue,
     'Подготовка документов': Colors.lightBlue,
@@ -33,7 +37,6 @@ class _ListViewCrmState extends State<ListViewCrm> {
   @override
   void initState() {
     super.initState();
-
     scrollController = ScrollController()..addListener(_scrollListener);
     stageMenuButtons = {
       'Новая': [true, 'NEW'],
@@ -46,7 +49,8 @@ class _ListViewCrmState extends State<ListViewCrm> {
     };
 
     dealsListFuture =
-        getDealsList(start: 0, stageIdList: stageMenuButtons.values);
+        bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
+    // getDealsList(start: 0, stageIdList: stageMenuButtons.values);
   }
 
   @override
@@ -75,8 +79,9 @@ class _ListViewCrmState extends State<ListViewCrm> {
               setState(() {
                 bool _b = stageMenuButtons[value]![0] ?? false;
                 stageMenuButtons[value]![0] = !_b;
-                dealsListFuture = getDealsList(
+                dealsListFuture = bitrix24.crmDealList(
                     start: 0, stageIdList: stageMenuButtons.values);
+
                 scrollController.jumpTo(0.0);
               });
             },
@@ -111,46 +116,15 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                       heightFactor: 2,
                                       child: CircularProgressIndicator());
                                 }
-                                return Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 22, vertical: 5),
-                                  elevation: 5,
-                                  child: ListTile(
-                                      isThreeLine: true,
-                                      title: Wrap(
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.start,
-                                        direction: Axis.vertical,
-                                        children: [
-                                          Text(
-                                            '${dealsList[index].title} \n${dealsList.length}',
-                                            textAlign: TextAlign.left,
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                color: stageColor[
-                                                    dealsList[index].stageId],
-                                                borderRadius:
-                                                    BorderRadius.circular(8)),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 5),
-                                            // color: Colors.blue,
-                                            child: Text(
-                                              '${dealsList[index].stageId}',
-                                              style: TextStyle(
-                                                  color: dealsList[index]
-                                                              .stageId ==
-                                                          'Сделка провалена'
-                                                      ? Colors.white
-                                                      : Colors.black87),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      subtitle: Text(
-                                          '${dealsList[index].opportunity}\n${dealsList[index].dataCreate}')),
+                                return DealCard(
+                                  title: dealsList[index].title,
+                                  textColor: dealsList[index].stageId ==
+                                          'Сделка провалена'
+                                      ? Colors.white
+                                      : Colors.black87,
+                                  stageColor:
+                                      stageColor[dealsList[index].stageId]!,
+                                  stageName: dealsList[index].stageId,
                                 );
                               }),
                         ),
@@ -188,12 +162,7 @@ class _ListViewCrmState extends State<ListViewCrm> {
     return false;
   }
 
-  void _scrollListener() {
-    print(
-        '${scrollController.position.extentAfter}  ${scrollController.position.maxScrollExtent}');
-    print(scrollController.position.extentAfter >=
-        (scrollController.position.maxScrollExtent));
-  }
+  void _scrollListener() {}
 
   void _addListItems() {}
 
@@ -219,5 +188,55 @@ class _ListViewCrmState extends State<ListViewCrm> {
             stageIdList: stageMenuButtons.values);
       }
     });
+  }
+}
+
+class DealCard extends StatelessWidget {
+  const DealCard(
+      {Key? key,
+      required this.stageColor,
+      required this.title,
+      required this.stageName,
+      this.textColor = Colors.black87})
+      : super(key: key);
+
+  final Color stageColor;
+  final Color textColor;
+  final String title;
+  final String stageName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white70,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      margin: EdgeInsets.symmetric(horizontal: 22, vertical: 5),
+      elevation: 8,
+      child: ListTile(
+          trailing: SizedBox(width: 20, child: Icon(Icons.more_vert)),
+          isThreeLine: true,
+          title: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.start,
+            direction: Axis.vertical,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: stageColor, borderRadius: BorderRadius.circular(8)),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                // color: Colors.blue,
+                child: Text(
+                  stageName,
+                  style: TextStyle(color: textColor),
+                ),
+              ),
+            ],
+          ),
+          subtitle: Text('')),
+    );
   }
 }

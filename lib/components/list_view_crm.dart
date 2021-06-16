@@ -62,6 +62,8 @@ class _ListViewCrmState extends State<ListViewCrm> {
               setState(() {
                 bool _b = stageMenuButtons[value] ?? false;
                 stageMenuButtons[value] = !_b;
+                dealsListFuture = getDealsList(start: 0);
+                scrollController.jumpTo(0.0);
               });
             },
           ),
@@ -72,6 +74,10 @@ class _ListViewCrmState extends State<ListViewCrm> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Deal> dealsList = snapshot.data!.deals;
+
+                      dealsList.removeWhere(
+                          (deal) => !(stageMenuButtons[deal.stageId] ?? true));
+                      print(dealsList);
                       return GestureDetector(
                         onVerticalDragDown: (_) =>
                             _updateList(dealsList: snapshot.data),

@@ -34,7 +34,7 @@ class Deal {
         id: json['ID'],
         title: json['TITLE'],
         typeId: json['TYPE_ID'] ?? '',
-        stageId: json['STAGE_ID'],
+        stageId: getStageWord(json['STAGE_ID']) ?? 'NEW',
         currencyId: json['CURRENCY_ID'],
         opportunity: double.parse(json['OPPORTUNITY'] ?? '0'),
         probability: json['PROBABILITY'],
@@ -42,6 +42,25 @@ class Deal {
         leadId: json['LEAD_ID'],
         dataCreate: json['DATE_CREATE'],
         dateModify: json['DATE_MODIFY']);
+  }
+}
+
+String? getStageWord(String stageId) {
+  switch (stageId) {
+    case 'NEW':
+      return 'Новая';
+    case 'PREPARATION':
+      return 'Подготовка документов';
+    case 'PREPAYMENT_INVOICE':
+      return 'Счет на предоплату';
+    case 'EXECUTING':
+      return 'В работе';
+    case 'FINAL_INVOICE':
+      return 'Финальный счет';
+    case 'LOSE':
+      return 'Сделка провалена';
+    case 'WON':
+      return 'Сделка успешна';
   }
 }
 

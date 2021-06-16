@@ -89,16 +89,18 @@ class _ListViewCrmState extends State<ListViewCrm> {
                     if (snapshot.hasData) {
                       List<Deal> dealsList = snapshot.data!.deals;
                       // print(dealsList);
-                      return RefreshWidget(
-                        onRefresh: loadList,
-                        child: NotificationListener(
-                          onNotification: (ScrollNotification notification) {
-                            return _handlerScrollNotification(
-                                notification, snapshot.data);
-                          },
+                      return NotificationListener(
+                        onNotification: (ScrollNotification notification) {
+                          return _handlerScrollNotification(
+                              notification, snapshot.data);
+                        },
+                        child: RefreshIndicator(
+                          onRefresh: loadList,
                           child: ListView.builder(
+
+                              // itemExtent: 150,
                               controller: scrollController,
-                              physics: BouncingScrollPhysics(),
+                              physics: AlwaysScrollableScrollPhysics(),
                               padding: EdgeInsets.only(top: 8),
                               itemCount: dealsList.length,
                               itemBuilder: (_, index) {

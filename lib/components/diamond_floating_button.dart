@@ -10,8 +10,10 @@ class DiamandFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.all(30),
+    return Positioned(
+        right: 30,
+        bottom: 30,
+        // margin: EdgeInsets.all(30),
         child: SizedBox(
           width: 70,
           height: 70,

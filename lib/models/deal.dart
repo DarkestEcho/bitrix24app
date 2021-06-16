@@ -84,7 +84,7 @@ class DealsList {
 
   factory DealsList.fromJson(Map<String, dynamic> json) {
     var dealsJson = json['result'] as List;
-    print(json['total'] is int);
+
     List<Deal> dealsList = dealsJson.map((i) => Deal.fromJson(i)).toList();
     return DealsList(
         deals: dealsList, total: json['total'], next: json['next']);
@@ -92,15 +92,19 @@ class DealsList {
 }
 
 Future<DealsList> getDealsList(
-    {required int start, DealsList? dealsList}) async {
+    {required int start,
+    DealsList? dealsList,
+    required Iterable<List> stageIdList}) async {
   const url =
       'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/crm.deal.list';
 
   var data = <String, dynamic>{
     'start': start.toString(),
     'order': {'DATE_MODIFY': 'DESC'},
-    'select': ['*', 'UF_*']
+    'select': ['*', 'UF_*'],
+    'filter': {'!STAGE_ID': getStageIdList(stageIdList)}
   };
+  print(getStageIdList(stageIdList));
   final response = await http.post(Uri.parse(url),
       body: jsonEncode(data),
       headers: {'Content-Type': 'application/json; charset=UTF-8'});
@@ -116,4 +120,16 @@ Future<DealsList> getDealsList(
   } else {
     throw Exception('Error; ${response.reasonPhrase}');
   }
+}
+
+List<String> getStageIdList(Iterable<List<dynamic>> stageId) {
+  List<String> stageIdList = [];
+
+  stageId.forEach((value) {
+    if (!value[0]) {
+      stageIdList.add(value[1]);
+    }
+  });
+
+  return stageIdList;
 }

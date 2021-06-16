@@ -8,7 +8,7 @@ class StageButtonsMenu extends StatelessWidget {
 
   final Function(String text) function;
 
-  final Map<String, bool> stageButtonsStatus;
+  final Map<String, List> stageButtonsStatus;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,52 +20,52 @@ class StageButtonsMenu extends StatelessWidget {
         children: [
           StageMenuButton(
             stageName: 'Новая',
-            color: (stageButtonsStatus['Новая'] ?? true)
+            color: (stageButtonsStatus['Новая']![0] ?? true)
                 ? Colors.blue
                 : Colors.white38,
             function: function,
           ),
           StageMenuButton(
             stageName: 'Подготовка документов',
-            color: (stageButtonsStatus['Подготовка документов'] ?? true)
+            color: (stageButtonsStatus['Подготовка документов']![0] ?? true)
                 ? Colors.lightBlue
                 : Colors.white38,
             function: function,
           ),
           StageMenuButton(
             stageName: 'Счет на предоплату',
-            color: (stageButtonsStatus['Счет на предоплату'] ?? true)
+            color: (stageButtonsStatus['Счет на предоплату']![0] ?? true)
                 ? Colors.cyan
                 : Colors.white38,
             function: function,
           ),
           StageMenuButton(
             stageName: 'В работе',
-            color: (stageButtonsStatus['В работе'] ?? true)
+            color: (stageButtonsStatus['В работе']![0] ?? true)
                 ? Colors.teal.shade400
                 : Colors.white38,
             function: function,
           ),
           StageMenuButton(
             stageName: 'Финальный счет',
-            color: (stageButtonsStatus['Финальный счет'] ?? true)
+            color: (stageButtonsStatus['Финальный счет']![0] ?? true)
                 ? Colors.orange
                 : Colors.white38,
             function: function,
           ),
           StageMenuButton(
             stageName: 'Сделка провалена',
-            color: (stageButtonsStatus['Сделка провалена'] ?? true)
+            color: (stageButtonsStatus['Сделка провалена']![0] ?? true)
                 ? Colors.red
                 : Colors.white38,
-            textColor: (stageButtonsStatus['Сделка провалена'] ?? true)
+            textColor: (stageButtonsStatus['Сделка провалена']![0] ?? true)
                 ? Colors.white
                 : Colors.black87,
             function: function,
           ),
           StageMenuButton(
             stageName: 'Сделка успешна',
-            color: (stageButtonsStatus['Сделка успешна'] ?? true)
+            color: (stageButtonsStatus['Сделка успешна']![0] ?? true)
                 ? Colors.green
                 : Colors.white38,
             function: function,

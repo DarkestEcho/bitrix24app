@@ -57,6 +57,7 @@ class _ListViewCrmState extends State<ListViewCrm> {
       child: Column(
         children: [
           StageButtonsMenu(
+            stageButtonsStatus: stageMenuButtons,
             function: (value) {
               setState(() {
                 bool _b = stageMenuButtons[value] ?? false;

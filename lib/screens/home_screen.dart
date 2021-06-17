@@ -119,7 +119,7 @@ class _AppContainerState extends State<AppContainer> {
       //height: double.infinity,
       decoration: BoxDecoration(
           image: DecorationImage(
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               image: AssetImage('assets/images/wp_3_rocks.jpg')),
           color: Colors.white,
           borderRadius: BorderRadius.circular(bIsSidebarOpen ? 20 : 0)),

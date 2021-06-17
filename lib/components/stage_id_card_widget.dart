@@ -18,7 +18,7 @@ class StageIdCardWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
           color: stageColor, borderRadius: BorderRadius.circular(8)),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       // color: Colors.blue,
       child: Text(
         stageName,

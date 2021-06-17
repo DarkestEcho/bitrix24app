@@ -12,6 +12,7 @@ class Deal {
   double opportunity;
   String? leadId;
   String? contactId;
+  String? comments;
 
   String? dataCreate;
   String? dateModify;
@@ -26,6 +27,7 @@ class Deal {
       this.probability,
       this.contactId,
       this.leadId,
+      this.comments,
       this.dataCreate,
       this.dateModify});
 
@@ -40,6 +42,9 @@ class Deal {
         probability: json['PROBABILITY'],
         contactId: json['CONTACT_ID'],
         leadId: json['LEAD_ID'],
+        comments: json['COMMENTS'] == null
+            ? null
+            : removeAllHtmlTags(json['COMMENTS']),
         dataCreate: json['DATE_CREATE'],
         dateModify: json['DATE_MODIFY']);
   }
@@ -89,6 +94,12 @@ class DealsList {
     return DealsList(
         deals: dealsList, total: json['total'], next: json['next']);
   }
+}
+
+String removeAllHtmlTags(String htmlText) {
+  RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+
+  return htmlText.replaceAll(exp, '');
 }
 
 Future<DealsList> getDealsList(

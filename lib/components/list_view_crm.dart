@@ -3,6 +3,7 @@ import 'package:bitrix24/components/diamond_floating_button.dart';
 import 'package:bitrix24/components/stage_buttons_menu.dart';
 import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/deal.dart';
+import 'package:bitrix24/screens/deal_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -22,10 +23,12 @@ class _ListViewCrmState extends State<ListViewCrm> {
   late ScrollController scrollController;
   late Future<DealsList> dealsListFuture;
   late Map<String, List> stageMenuButtons;
+  late final String _webhook;
+
   var formatter = NumberFormat('###,###,###');
 
-  Bitrix24 bitrix24 = Bitrix24(
-      weebhook: 'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/');
+  late final Bitrix24 bitrix24;
+
   Map<String, Color> stageColor = {
     'Новая': Colors.blue,
     'Подготовка документов': Colors.lightBlue,
@@ -39,6 +42,9 @@ class _ListViewCrmState extends State<ListViewCrm> {
   @override
   void initState() {
     super.initState();
+    _webhook = 'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/';
+    bitrix24 = Bitrix24(webhook: _webhook);
+
     scrollController = ScrollController()..addListener(_scrollListener);
     stageMenuButtons = {
       'Новая': [true, 'NEW'],
@@ -130,7 +136,8 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                       ? Colors.white
                                       : Colors.black87,
                                   stageColor:
-                                      stageColor[dealsList[index].stageId]!,
+                                      stageColor[dealsList[index].stageId] ??
+                                          Colors.white,
                                   stageName: dealsList[index].stageId,
                                   opportunity: formatter.format(
                                           dealsList[index].opportunity) +
@@ -151,7 +158,24 @@ class _ListViewCrmState extends State<ListViewCrm> {
               DiamandFloatingButton(
                 onPressed: () {
                   // setState(() {
-                  print(stageMenuButtons);
+                  // Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DealAddPage(
+                          webhook: _webhook,
+                          function: () {
+                            Future.delayed(Duration(milliseconds: 1000), () {
+                              setState(() {
+                                print('create');
+                                this.dealsListFuture = bitrix24.crmDealList(
+                                    start: 0,
+                                    stageIdList: stageMenuButtons.values);
+                              });
+                            });
+                          }),
+                    ),
+                  );
                   //dealsListFuture = getDealsList(start: 0);
                   // });
                 },

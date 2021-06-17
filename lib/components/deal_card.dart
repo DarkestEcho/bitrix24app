@@ -11,7 +11,8 @@ class DealCard extends StatelessWidget {
       required this.opportunity,
       required this.date,
       required this.time,
-      required this.function})
+      required this.function,
+      required this.onTap})
       : super(key: key);
 
   final Color stageColor;
@@ -22,6 +23,7 @@ class DealCard extends StatelessWidget {
   final String date;
   final String time;
   final Function() function;
+  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class DealCard extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 22, vertical: 5),
         elevation: 8,
         child: ListTile(
+          onTap: onTap,
           // contentPadding: EdgeInsets.all(15),
           trailing: IconButton(
             visualDensity: VisualDensity.comfortable,

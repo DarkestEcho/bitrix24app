@@ -1,23 +1,25 @@
-import 'dart:ui';
-
 import 'package:bitrix24/models/bitrix24.dart';
+import 'package:bitrix24/models/deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class DealAddPage extends StatefulWidget {
+class DealViewPage extends StatefulWidget {
   final Function() function;
   final String _webhook;
-  const DealAddPage({Key? key, required String webhook, required this.function})
-      : this._webhook = webhook,
+  final Deal deal;
+  const DealViewPage({
+    Key? key,
+    required this.deal,
+    required String webhook,
+    required this.function,
+  })  : this._webhook = webhook,
         super(key: key);
 
   @override
-  _DealAddPageState createState() => _DealAddPageState();
+  _DealViewPageState createState() => _DealViewPageState();
 }
 
-class _DealAddPageState extends State<DealAddPage> {
-  final _formKey = GlobalKey<FormState>();
-
+class _DealViewPageState extends State<DealViewPage> {
   final _titleController = TextEditingController();
   final _oppController = TextEditingController();
 
@@ -43,9 +45,9 @@ class _DealAddPageState extends State<DealAddPage> {
   Map<String, String> _stages = {
     'NEW': 'Новая',
     'PREPARATION': 'Подготовка документов',
-    'PREPAYMENT_INVOICE': 'Cчёт на предоплату',
+    'PREPAYMENT_INVOICE': 'Счет на предоплату',
     'EXECUTING': 'В работе',
-    'FINAL_INVOICE': 'Финальный счёт',
+    'FINAL_INVOICE': 'Финальный счет',
     'WON': 'Сделка успешна',
     'LOSE': 'Сделка провалена'
   };
@@ -65,8 +67,25 @@ class _DealAddPageState extends State<DealAddPage> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    _selectedCurrency = widget.deal.currencyId;
+
+    print(widget.deal.stageId == 'Счет на предоплату');
+    print(widget.deal.currencyId);
+
+    _stages.forEach((key, value) {
+      if (value == widget.deal.stageId) {
+        this._selectedStage = key;
+      }
+    });
+    super.initState();
+  }
+
   String _selectedCurrency = 'RUB';
   String _selectedStage = 'NEW';
+
+  bool isEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +109,7 @@ class _DealAddPageState extends State<DealAddPage> {
                 padding: EdgeInsets.all(16.0),
                 children: [
                   getTextFormField(
+                      value: widget.deal.title,
                       autofocus: true,
                       context: context,
                       currentFocus: _titleFocus,
@@ -101,6 +121,7 @@ class _DealAddPageState extends State<DealAddPage> {
                     height: 15,
                   ),
                   getTextFormField(
+                    value: widget.deal.opportunity.toString(),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter(RegExp(r'^[\d\.]+'),
@@ -133,6 +154,7 @@ class _DealAddPageState extends State<DealAddPage> {
                     height: 15,
                   ),
                   getTextFormField(
+                      value: widget.deal.contactId,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter(RegExp(r'^[\d]+'),
@@ -149,6 +171,7 @@ class _DealAddPageState extends State<DealAddPage> {
                   ),
                   // getDropdownButtonFormField(),
                   getTextFormField(
+                    value: widget.deal.probability,
                     context: context,
                     currentFocus: _probFocus,
                     controller: _probController,
@@ -163,6 +186,7 @@ class _DealAddPageState extends State<DealAddPage> {
                     height: 15,
                   ),
                   getTextFormField(
+                    value: widget.deal.comments,
                     context: context,
                     minLines: 1,
                     maxLines: 4,
@@ -244,21 +268,23 @@ class _DealAddPageState extends State<DealAddPage> {
             value: item,
           );
         }).toList(),
-        onChanged: (currency) {
-          print(currency);
-          setState(
-            () {
-              items.forEach((key, value) {
-                if (value == currency) {
-                  if (labelText == 'Валюта')
-                    this._selectedCurrency = key;
-                  else
-                    this._selectedStage = key;
-                }
-              });
-            },
-          );
-        },
+        onChanged: isEdit
+            ? (currency) {
+                print(currency);
+                setState(
+                  () {
+                    items.forEach((key, value) {
+                      if (value == currency) {
+                        if (labelText == 'Валюта')
+                          this._selectedCurrency = key;
+                        else
+                          this._selectedStage = key;
+                      }
+                    });
+                  },
+                );
+              }
+            : null,
         value: labelText == 'Валюта'
             ? items[this._selectedCurrency]
             : items[this._selectedStage],
@@ -293,7 +319,8 @@ class _DealAddPageState extends State<DealAddPage> {
   }
 
   TextFormField getTextFormField(
-      {String? Function(String?)? validator,
+      {String? value,
+      String? Function(String?)? validator,
       TextInputType? keyboardType,
       bool autofocus = false,
       required String labelText,
@@ -305,7 +332,9 @@ class _DealAddPageState extends State<DealAddPage> {
       int? minLines,
       int? maxLines,
       List<TextInputFormatter>? inputFormatters}) {
+    controller.text = value ?? '';
     return TextFormField(
+      enabled: isEdit,
       validator: validator,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
@@ -319,6 +348,7 @@ class _DealAddPageState extends State<DealAddPage> {
       },
       controller: controller,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(left: 10),
         labelText: '  $labelText',
         hintText: hintText,
         // prefixIcon: Icon(Icons.edit_rounded),

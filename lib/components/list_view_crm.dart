@@ -4,6 +4,7 @@ import 'package:bitrix24/components/stage_buttons_menu.dart';
 import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:bitrix24/screens/deal_add_screen.dart';
+import 'package:bitrix24/screens/deal_view_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -127,6 +128,39 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                 Map<String, String> dateTime = bitrix24
                                     .dateParser(dealsList[index].dataCreate!);
                                 return DealCard(
+                                  onTap: () {
+                                    setState(() {
+                                      print('view');
+                                      this.dealsListFuture =
+                                          bitrix24.crmDealList(
+                                              start: 0,
+                                              stageIdList:
+                                                  stageMenuButtons.values);
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DealViewPage(
+                                            deal: dealsList[index],
+                                            webhook: _webhook,
+                                            function: () {
+                                              Future.delayed(
+                                                  Duration(milliseconds: 1000),
+                                                  () {
+                                                setState(() {
+                                                  print('create');
+                                                  this.dealsListFuture =
+                                                      bitrix24.crmDealList(
+                                                          start: 0,
+                                                          stageIdList:
+                                                              stageMenuButtons
+                                                                  .values);
+                                                });
+                                              });
+                                            }),
+                                      ),
+                                    );
+                                  },
                                   function: () {
                                     deleteDeal(dealsList[index].id);
                                   },

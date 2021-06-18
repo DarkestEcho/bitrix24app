@@ -204,8 +204,6 @@ class _DealAddPageState extends State<DealAddPage> {
   }
 
   void _submitForm() {
-    print('true');
-
     Bitrix24 bitrix24 = Bitrix24(webhook: widget._webhook);
     bitrix24.crmDealAdd(
         title: _titleController.text,
@@ -218,8 +216,6 @@ class _DealAddPageState extends State<DealAddPage> {
 
     widget.function();
     Navigator.pop(context);
-
-    // _showMessage(message: 'Форма заполнена некорректно ', isBad: true);
   }
 
   Container getDropdownButtonFormField(

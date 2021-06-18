@@ -102,37 +102,6 @@ String removeAllHtmlTags(String htmlText) {
   return htmlText.replaceAll(exp, '');
 }
 
-Future<DealsList> getDealsList(
-    {required int start,
-    DealsList? dealsList,
-    required Iterable<List> stageIdList}) async {
-  const url =
-      'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/crm.deal.list';
-
-  var data = <String, dynamic>{
-    'start': start.toString(),
-    'order': {'DATE_MODIFY': 'DESC'},
-    'select': ['*', 'UF_*'],
-    'filter': {'!STAGE_ID': getStageIdList(stageIdList)}
-  };
-  print(getStageIdList(stageIdList));
-  final response = await http.post(Uri.parse(url),
-      body: jsonEncode(data),
-      headers: {'Content-Type': 'application/json; charset=UTF-8'});
-  // final response = await http.get(Uri.parse(url));
-  if (response.statusCode == 200) {
-    if (dealsList != null) {
-      DealsList newDealsList = DealsList.fromJson(json.decode(response.body));
-      newDealsList.deals.insertAll(0, dealsList.deals);
-
-      return newDealsList;
-    }
-    return DealsList.fromJson(json.decode(response.body));
-  } else {
-    throw Exception('Error; ${response.reasonPhrase}');
-  }
-}
-
 List<String> getStageIdList(Iterable<List<dynamic>> stageId) {
   List<String> stageIdList = [];
 

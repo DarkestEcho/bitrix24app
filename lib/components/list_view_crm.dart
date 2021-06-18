@@ -248,12 +248,10 @@ class _ListViewCrmState extends State<ListViewCrm> {
 
     Future.delayed(Duration(milliseconds: 1000), () {
       setState(() {
-        print('update');
         this.dealsListFuture = bitrix24.crmDealList(
             start: 0, stageIdList: stageMenuButtons.values);
       });
     });
-    ;
   }
 
   bool _handlerScrollNotification(
@@ -268,25 +266,21 @@ class _ListViewCrmState extends State<ListViewCrm> {
 
   void _scrollListener() {}
 
-  void _addListItems() {}
-
   Future loadList() async {
     await Future.delayed(Duration(milliseconds: 400));
-    print('Refresh!');
     setState(() {
       this.dealsListFuture =
-          getDealsList(start: 0, stageIdList: stageMenuButtons.values);
+          bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
     });
   }
 
   void _updateList({DealsList? dealsList}) {
-    print('Update list');
     setState(() {
       if (dealsList != null) {
         if (dealsList.getNext == 0) {
           return;
         }
-        dealsListFuture = getDealsList(
+        dealsListFuture = bitrix24.crmDealList(
             start: dealsList.getNext,
             dealsList: dealsList,
             stageIdList: stageMenuButtons.values);

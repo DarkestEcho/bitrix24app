@@ -40,6 +40,42 @@ class Bitrix24 {
     }
   }
 
+  Future<int> crmDealUdpade({
+    required String id,
+    String? title,
+    String? stageId,
+    String? contactId,
+    String? probability,
+    String? currencyId,
+    String? opportunity,
+    String? comments,
+  }) async {
+    var data = <String, dynamic>{
+      'id': id,
+      'fields': {
+        "TITLE": title,
+        "STAGE_ID": stageId,
+        "CONTACT_ID": contactId,
+        "PROBABILITY": probability,
+        "CURRENCY_ID": currencyId,
+        "OPPORTUNITY": opportunity,
+        "COMMENTS": comments
+      }
+    };
+    print(data);
+    final response = await http.post(Uri.parse(_webhook + 'crm.deal.update'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      print(0);
+      return 0;
+    } else {
+      print(response.reasonPhrase);
+      return 1;
+    }
+  }
+
   Map<String, String> currency = {
     'RUB': 'руб.',
     'USD': '\$',

@@ -94,6 +94,18 @@ class _DealViewPageState extends State<DealViewPage> {
       appBar: AppBar(
         backgroundColor: Color(0xeeB1F2B36), //Color(0xddff7043),
         title: Text(''),
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  isEdit = !isEdit;
+                });
+              },
+              icon: Icon(isEdit ? Icons.edit_off : Icons.edit)),
+          SizedBox(
+            width: 18,
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -231,7 +243,8 @@ class _DealViewPageState extends State<DealViewPage> {
     print('true');
 
     Bitrix24 bitrix24 = Bitrix24(webhook: widget._webhook);
-    bitrix24.crmDealAdd(
+    bitrix24.crmDealUdpade(
+        id: widget.deal.id,
         title: _titleController.text,
         opportunity: _oppController.text,
         stageId: _selectedStage,
@@ -348,7 +361,7 @@ class _DealViewPageState extends State<DealViewPage> {
       },
       controller: controller,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 10),
+        // contentPadding: EdgeInsets.only(left: 10),
         labelText: '  $labelText',
         hintText: hintText,
         // prefixIcon: Icon(Icons.edit_rounded),

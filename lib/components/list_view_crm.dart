@@ -148,7 +148,7 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                                   Duration(milliseconds: 1000),
                                                   () {
                                                 setState(() {
-                                                  print('create');
+                                                  print('update');
                                                   this.dealsListFuture =
                                                       bitrix24.crmDealList(
                                                           start: 0,

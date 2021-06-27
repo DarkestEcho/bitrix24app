@@ -1,4 +1,6 @@
-import 'package:bitrix24/components/list_view_crm.dart';
+import 'package:bitrix24/components/contact_list_view_crm.dart';
+import 'package:bitrix24/components/deal_list_view_crm.dart';
+import 'package:bitrix24/components/lead_list_view_crm.dart';
 import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:bitrix24/models/menu_item.dart';
 import 'package:flutter/material.dart';
@@ -153,10 +155,26 @@ class _AppContainerState extends State<AppContainer> {
             ),
           ),
           Expanded(
-            child: ListViewCrm(mainPagePaddingRight: mainPagePaddingRight),
+            child: _getListViewCrm(),
           )
         ],
       ),
+    );
+  }
+
+  Widget _getListViewCrm() {
+    if (pageTitle == menuItems[0]) {
+      return LeadListViewCrm(mainPagePaddingRight: mainPagePaddingRight);
+    }
+    if (pageTitle == menuItems[1]) {
+      return DealListViewCrm(mainPagePaddingRight: mainPagePaddingRight);
+    }
+    if (pageTitle == menuItems[2]) {
+      return ContactListViewCrm(mainPagePaddingRight: mainPagePaddingRight);
+    }
+    return Container(
+      margin: EdgeInsets.only(right: mainPagePaddingRight),
+      child: Icon(Icons.error),
     );
   }
 

@@ -8,8 +8,8 @@ import 'package:bitrix24/screens/deal_view_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ListViewCrm extends StatefulWidget {
-  const ListViewCrm({
+class LeadListViewCrm extends StatefulWidget {
+  const LeadListViewCrm({
     Key? key,
     required this.mainPagePaddingRight,
   }) : super(key: key);
@@ -17,10 +17,10 @@ class ListViewCrm extends StatefulWidget {
   final double mainPagePaddingRight;
 
   @override
-  _ListViewCrmState createState() => _ListViewCrmState();
+  _LeadListViewCrmState createState() => _LeadListViewCrmState();
 }
 
-class _ListViewCrmState extends State<ListViewCrm> {
+class _LeadListViewCrmState extends State<LeadListViewCrm> {
   late ScrollController scrollController;
   late Future<DealsList> dealsListFuture;
   late Map<String, List> stageMenuButtons;

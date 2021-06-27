@@ -116,7 +116,7 @@ class _DealAddPageState extends State<DealAddPage> {
                     height: 15,
                   ),
                   getDropdownButtonFormField(
-                    width: 186,
+                    // width: 186,
                     items: _currencies,
                     labelText: 'Валюта',
                   ),
@@ -125,7 +125,7 @@ class _DealAddPageState extends State<DealAddPage> {
                     height: 15,
                   ),
                   getDropdownButtonFormField(
-                    width: 148,
+                    // width: 148,
                     items: _stages,
                     labelText: 'Стадия',
                   ),
@@ -221,10 +221,10 @@ class _DealAddPageState extends State<DealAddPage> {
   Container getDropdownButtonFormField(
       {required String labelText,
       required Map<String, String> items,
-      required double width}) {
+      double? width}) {
     return Container(
       // width: 200,
-      margin: EdgeInsets.only(right: width),
+      margin: width == null ? null : EdgeInsets.only(right: width),
       child: DropdownButtonFormField(
         decoration: InputDecoration(
           labelStyle: TextStyle(color: Colors.black87),

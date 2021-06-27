@@ -143,7 +143,7 @@ class _AppContainerState extends State<AppContainer> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  padding: EdgeInsets.only(top: 20, bottom: 15),
                   child: Text(
                     pageTitle,
                     style: TextStyle(fontSize: 18),

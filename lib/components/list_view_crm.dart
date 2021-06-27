@@ -161,9 +161,42 @@ class _ListViewCrmState extends State<ListViewCrm> {
                                       ),
                                     );
                                   },
-                                  function: () {
-                                    deleteDeal(dealsList[index].id);
-                                  },
+                                  function: () => showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text(
+                                        'Вы действительно хотите удалить сделку?',
+                                        // textAlign: TextAlign.center,
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'Cancel'),
+                                          child: const Text(
+                                            'Отмена',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            deleteDeal(dealsList[index].id);
+                                            Navigator.pop(context, 'OK');
+                                          },
+                                          child: const Text(
+                                            'Удалить',
+                                            style: TextStyle(
+                                              color: Colors.redAccent,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  // _showDeleteDealDialog(dealsList[index].id);
+                                  // deleteDeal(dealsList[index].id);
+                                  ,
                                   title: dealsList[index].title,
                                   textColor: dealsList[index].stageId ==
                                           'Сделка провалена'

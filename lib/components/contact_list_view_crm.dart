@@ -5,6 +5,7 @@ import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:bitrix24/screens/deal_add_screen.dart';
 import 'package:bitrix24/screens/deal_view_screen.dart';
+import 'package:bitrix24/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +25,6 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
   late ScrollController scrollController;
   late Future<DealsList> dealsListFuture;
   late Map<String, List> stageMenuButtons;
-  late final String _webhook;
 
   var formatter = NumberFormat('###,###,###');
 
@@ -43,8 +43,8 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
   @override
   void initState() {
     super.initState();
-    _webhook = 'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/';
-    bitrix24 = Bitrix24(webhook: _webhook);
+
+    bitrix24 = Bitrix24(webhook: webhook);
 
     scrollController = ScrollController()..addListener(_scrollListener);
     stageMenuButtons = {
@@ -142,7 +142,7 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                                       MaterialPageRoute(
                                         builder: (context) => DealViewPage(
                                             deal: dealsList[index],
-                                            webhook: _webhook,
+                                            webhook: webhook,
                                             function: () {
                                               Future.delayed(
                                                   Duration(milliseconds: 1000),
@@ -230,7 +230,7 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DealAddPage(
-                          webhook: _webhook,
+                          webhook: webhook,
                           function: () {
                             Future.delayed(Duration(milliseconds: 1000), () {
                               setState(() {

@@ -4,32 +4,39 @@ import 'package:bitrix24/models/bitrix24.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class DealAddPage extends StatefulWidget {
+class LeadAddPage extends StatefulWidget {
   final Function() function;
   final String _webhook;
-  const DealAddPage({Key? key, required String webhook, required this.function})
+  const LeadAddPage({Key? key, required String webhook, required this.function})
       : this._webhook = webhook,
         super(key: key);
 
   @override
-  _DealAddPageState createState() => _DealAddPageState();
+  _LeadAddPageState createState() => _LeadAddPageState();
 }
 
-class _DealAddPageState extends State<DealAddPage> {
+class _LeadAddPageState extends State<LeadAddPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _titleController = TextEditingController();
   final _oppController = TextEditingController();
-
-  final _probController = TextEditingController();
-  final _contactController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _secondNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _postController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _commentsController = TextEditingController();
 
   final _titleFocus = FocusNode();
   final _oppFocus = FocusNode();
+  final _nameFocus = FocusNode();
+  final _secondNameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
+  final _postFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _emailFocus = FocusNode();
 
-  final _probFocus = FocusNode();
-  final _contactFocus = FocusNode();
   final _commentsFocus = FocusNode();
 
   Map<String, String> _currencies = {
@@ -40,33 +47,40 @@ class _DealAddPageState extends State<DealAddPage> {
     'BYN': 'Белорусский рубль'
   };
 
-  Map<String, String> _stages = {
-    'NEW': 'Новая',
-    'PREPARATION': 'Подготовка документов',
-    'PREPAYMENT_INVOICE': 'Cчёт на предоплату',
-    'EXECUTING': 'В работе',
-    'FINAL_INVOICE': 'Финальный счёт',
-    'WON': 'Сделка успешна',
-    'LOSE': 'Сделка провалена'
+  Map<String, String> _statuses = {
+    'NEW': 'Не обработан',
+    'IN_PROCESS': 'В работе',
+    'PROCESSED': 'Обработан',
+    'JUNK': 'Некачественный лид',
+    'CONVERTED': 'Качественный лид',
   };
 
   void dispose() {
     _titleController.dispose();
     _oppController.dispose();
-    _probController.dispose();
-    _contactController.dispose();
+    _secondNameController.dispose();
+    _nameController.dispose();
+    _lastNameController.dispose();
+    _postController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
     _commentsController.dispose();
 
     _titleFocus.dispose();
     _oppFocus.dispose();
-    _probFocus.dispose();
-    _contactFocus.dispose();
+    _nameFocus.dispose();
+    _secondNameFocus.dispose();
+    _lastNameFocus.dispose();
+    _phoneFocus.dispose();
+    _postFocus.dispose();
+    _emailFocus.dispose();
     _commentsFocus.dispose();
+
     super.dispose();
   }
 
   String _selectedCurrency = 'RUB';
-  String _selectedStage = 'NEW';
+  String _selectedStatus = 'NEW';
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +88,7 @@ class _DealAddPageState extends State<DealAddPage> {
       // backgroundColor: Colors.deepOrange,
       appBar: AppBar(
         backgroundColor: Color(0xeeB1F2B36), //Color(0xddff7043),
-        title: Text('Создание сделки'),
+        title: Text('Создание лида'),
       ),
       body: Form(
         key: _formKey,
@@ -98,7 +112,15 @@ class _DealAddPageState extends State<DealAddPage> {
                         nextFocus: _oppFocus,
                         controller: _titleController,
                         labelText: 'Название',
-                        hintText: 'Сделка #'),
+                        hintText: 'Лид #'),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getDropdownButtonFormField(
+                      // width: 148,
+                      items: _statuses,
+                      labelText: 'Статус',
+                    ),
                     SizedBox(
                       height: 15,
                     ),
@@ -110,7 +132,7 @@ class _DealAddPageState extends State<DealAddPage> {
                       ],
                       context: context,
                       currentFocus: _oppFocus,
-                      nextFocus: _contactFocus,
+                      nextFocus: _lastNameFocus,
                       controller: _oppController,
                       labelText: 'Сумма',
                       validator: _validateOpportunity,
@@ -123,44 +145,73 @@ class _DealAddPageState extends State<DealAddPage> {
                       items: _currencies,
                       labelText: 'Валюта',
                     ),
-
-                    SizedBox(
-                      height: 15,
-                    ),
-                    getDropdownButtonFormField(
-                      // width: 148,
-                      items: _stages,
-                      labelText: 'Стадия',
-                    ),
                     SizedBox(
                       height: 15,
                     ),
                     getTextFormField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter(RegExp(r'^[\d]+'),
-                              allow: true),
-                        ],
+                        autofocus: true,
                         context: context,
-                        currentFocus: _contactFocus,
-                        controller: _contactController,
-                        nextFocus: _probFocus,
-                        labelText: 'Контакт',
-                        hintText: 'Id контакта'),
+                        currentFocus: _lastNameFocus,
+                        nextFocus: _nameFocus,
+                        controller: _lastNameController,
+                        labelText: 'Фамилия'),
                     SizedBox(
                       height: 15,
                     ),
-                    // getDropdownButtonFormField(),
                     getTextFormField(
+                        autofocus: true,
+                        context: context,
+                        currentFocus: _nameFocus,
+                        nextFocus: _secondNameFocus,
+                        controller: _nameController,
+                        labelText: 'Имя'),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                        autofocus: true,
+                        context: context,
+                        currentFocus: _secondNameFocus,
+                        nextFocus: _postFocus,
+                        controller: _secondNameController,
+                        labelText: 'Отчество'),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                        autofocus: true,
+                        context: context,
+                        currentFocus: _postFocus,
+                        nextFocus: _phoneFocus,
+                        controller: _postController,
+                        labelText: 'Должность'),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                      autofocus: true,
                       context: context,
-                      currentFocus: _probFocus,
-                      controller: _probController,
-                      labelText: 'Вероятность',
-                      keyboardType: TextInputType.number,
+                      currentFocus: _phoneFocus,
+                      nextFocus: _emailFocus,
+                      controller: _phoneController,
+                      labelText: 'Телефон',
                       inputFormatters: [
-                        FilteringTextInputFormatter(RegExp(r'^[\d]+'),
+                        // FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter(RegExp(r'^[()\d\+]+'),
                             allow: true),
                       ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _emailFocus,
+                      nextFocus: _commentsFocus,
+                      controller: _emailController,
+                      labelText: 'Email',
+                      validator: _validateEmail,
                     ),
                     SizedBox(
                       height: 15,
@@ -211,16 +262,21 @@ class _DealAddPageState extends State<DealAddPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
-      _showMessage(message: 'Сделка создана');
+      _showMessage(message: 'Лид создан');
       Bitrix24 bitrix24 = Bitrix24(webhook: widget._webhook);
-      bitrix24.crmDealAdd(
-          title: _titleController.text,
-          opportunity: _oppController.text,
-          stageId: _selectedStage,
-          contactId: _contactController.text,
-          comments: _commentsController.text,
-          probability: _probController.text,
-          currencyId: _selectedCurrency);
+      bitrix24.crmLeadAdd(
+        title: _titleController.text,
+        opportunity: _oppController.text,
+        statusId: _selectedStatus,
+        comments: _commentsController.text,
+        currencyId: _selectedCurrency,
+        name: _nameController.text,
+        secondName: _secondNameController.text,
+        lastName: _lastNameController.text,
+        post: _postController.text,
+        phone: _phoneController.text,
+        email: _emailController.text,
+      );
 
       widget.function();
       Navigator.pop(context);
@@ -263,7 +319,7 @@ class _DealAddPageState extends State<DealAddPage> {
                   if (labelText == 'Валюта')
                     this._selectedCurrency = key;
                   else
-                    this._selectedStage = key;
+                    this._selectedStatus = key;
                 }
               });
             },
@@ -271,7 +327,7 @@ class _DealAddPageState extends State<DealAddPage> {
         },
         value: labelText == 'Валюта'
             ? items[this._selectedCurrency]
-            : items[this._selectedStage],
+            : items[this._selectedStatus],
 
         // validator: (val) {
         //   return val == null ? 'Please select a country' : null;
@@ -318,6 +374,19 @@ class _DealAddPageState extends State<DealAddPage> {
     if (c > 1) {
       return 'Значение введено некорректно';
     }
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null) {
+      return null;
+    }
+    if (value.isEmpty) {
+      return null;
+    }
+    if (!_emailController.text.contains('@') || !value.contains('.')) {
+      return 'Неправильный email-адрес';
+    }
+    return null;
   }
 
   TextFormField getTextFormField(

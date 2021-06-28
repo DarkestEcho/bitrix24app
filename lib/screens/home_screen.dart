@@ -5,6 +5,9 @@ import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:bitrix24/models/menu_item.dart';
 import 'package:flutter/material.dart';
 
+const String webhook =
+    'https://b24-dxpzij.bitrix24.ru/rest/1/o71asvzlz62e2uxi/';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
     Key? key,

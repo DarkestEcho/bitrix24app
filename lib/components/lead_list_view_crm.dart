@@ -1,10 +1,13 @@
 import 'package:bitrix24/components/deal_card.dart';
 import 'package:bitrix24/components/diamond_floating_button.dart';
-import 'package:bitrix24/components/stage_buttons_menu.dart';
+import 'package:bitrix24/components/status_buttons_menu.dart';
+
 import 'package:bitrix24/models/bitrix24.dart';
-import 'package:bitrix24/models/deal.dart';
-import 'package:bitrix24/screens/deal_add_screen.dart';
-import 'package:bitrix24/screens/deal_view_screen.dart';
+import 'package:bitrix24/models/lead.dart';
+
+import 'package:bitrix24/screens/home_screen.dart';
+import 'package:bitrix24/screens/lead_add_screen.dart';
+import 'package:bitrix24/screens/lead_view_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -22,43 +25,38 @@ class LeadListViewCrm extends StatefulWidget {
 
 class _LeadListViewCrmState extends State<LeadListViewCrm> {
   late ScrollController scrollController;
-  late Future<DealsList> dealsListFuture;
-  late Map<String, List> stageMenuButtons;
-  late final String _webhook;
+  late Future<LeadsList> leadsListFuture;
+  late Map<String, List> statusMenuButtons;
 
   var formatter = NumberFormat('###,###,###');
 
   late final Bitrix24 bitrix24;
 
   Map<String, Color> stageColor = {
-    'Новая': Colors.blue,
-    'Подготовка документов': Colors.lightBlue,
-    'Счет на предоплату': Colors.cyan,
+    'Не обработан': Colors.blue,
     'В работе': Colors.teal.shade400,
-    'Финальный счет': Colors.orange,
-    'Сделка провалена': Colors.red,
-    'Сделка успешна': Colors.green,
+    'Обработан': Colors.orange,
+    'Некачественный лид': Colors.red,
+    'Качественный лид': Colors.green,
   };
 
   @override
   void initState() {
     super.initState();
-    _webhook = 'https://b24-jnhi2r.bitrix24.ru/rest/1/pe1gbzl0hiihhcjq/';
-    bitrix24 = Bitrix24(webhook: _webhook);
+
+    bitrix24 = Bitrix24(webhook: webhook);
 
     scrollController = ScrollController()..addListener(_scrollListener);
-    stageMenuButtons = {
-      'Новая': [true, 'NEW'],
-      'Подготовка документов': [true, 'PREPARATION'],
-      'Счет на предоплату': [true, 'PREPAYMENT_INVOICE'],
-      'В работе': [true, 'EXECUTING'],
-      'Финальный счет': [true, 'FINAL_INVOICE'],
-      'Сделка провалена': [true, 'LOSE'],
-      'Сделка успешна': [true, 'WON'],
+    statusMenuButtons = {
+      'Не обработан': [true, 'NEW'],
+      'В работе': [true, 'IN_PROCESS'],
+      'Обработан': [true, 'PROCESSED'],
+      'Некачественный лид': [true, 'JUNK'],
+      'Качественный лид': [true, 'CONVERTED'],
     };
 
-    dealsListFuture =
-        bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
+    leadsListFuture =
+        bitrix24.crmLeadList(start: 0, statusIdList: statusMenuButtons.values);
     // getDealsList(start: 0, stageIdList: stageMenuButtons.values);
   }
 
@@ -83,14 +81,14 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
       // padding: EdgeInsets.only(right: mainPagePaddingRight),
       child: Column(
         children: [
-          StageButtonsMenu(
-            stageButtonsStatus: stageMenuButtons,
+          StatusButtonsMenu(
+            statusButtonsStatus: statusMenuButtons,
             function: (value) {
               setState(() {
-                bool _b = stageMenuButtons[value]![0] ?? false;
-                stageMenuButtons[value]![0] = !_b;
-                dealsListFuture = bitrix24.crmDealList(
-                    start: 0, stageIdList: stageMenuButtons.values);
+                bool _b = statusMenuButtons[value]![0] ?? false;
+                statusMenuButtons[value]![0] = !_b;
+                leadsListFuture = bitrix24.crmLeadList(
+                    start: 0, statusIdList: statusMenuButtons.values);
 
                 scrollController.jumpTo(0.0);
               });
@@ -98,11 +96,11 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
           ),
           Expanded(
             child: Stack(alignment: Alignment.bottomRight, children: [
-              FutureBuilder<DealsList>(
-                  future: dealsListFuture,
+              FutureBuilder<LeadsList>(
+                  future: leadsListFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<Deal> dealsList = snapshot.data!.deals;
+                      List<Lead> leadsList = snapshot.data!.deals;
                       // print(dealsList);
                       return NotificationListener(
                         onNotification: (ScrollNotification notification) {
@@ -116,44 +114,44 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                               controller: scrollController,
                               physics: AlwaysScrollableScrollPhysics(),
                               padding: EdgeInsets.only(top: 8),
-                              itemCount: dealsList.length,
+                              itemCount: leadsList.length,
                               itemBuilder: (_, index) {
-                                if (index + 1 == dealsList.length &&
-                                    dealsList.length !=
+                                if (index + 1 == leadsList.length &&
+                                    leadsList.length !=
                                         snapshot.data!.getTotal) {
                                   return Center(
                                       heightFactor: 2,
                                       child: CircularProgressIndicator());
                                 }
                                 Map<String, String> dateTime = bitrix24
-                                    .dateParser(dealsList[index].dataCreate!);
+                                    .dateParser(leadsList[index].dataCreate!);
                                 return DealCard(
                                   onTap: () {
                                     setState(() {
                                       print('view');
-                                      this.dealsListFuture =
-                                          bitrix24.crmDealList(
+                                      this.leadsListFuture =
+                                          bitrix24.crmLeadList(
                                               start: 0,
-                                              stageIdList:
-                                                  stageMenuButtons.values);
+                                              statusIdList:
+                                                  statusMenuButtons.values);
                                     });
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => DealViewPage(
-                                            deal: dealsList[index],
-                                            webhook: _webhook,
+                                        builder: (context) => LeadViewPage(
+                                            lead: leadsList[index],
+                                            webhook: webhook,
                                             function: () {
                                               Future.delayed(
                                                   Duration(milliseconds: 1000),
                                                   () {
                                                 setState(() {
                                                   print('update');
-                                                  this.dealsListFuture =
-                                                      bitrix24.crmDealList(
+                                                  this.leadsListFuture =
+                                                      bitrix24.crmLeadList(
                                                           start: 0,
-                                                          stageIdList:
-                                                              stageMenuButtons
+                                                          statusIdList:
+                                                              statusMenuButtons
                                                                   .values);
                                                 });
                                               });
@@ -166,7 +164,7 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                                     builder: (BuildContext context) =>
                                         AlertDialog(
                                       title: const Text(
-                                        'Вы действительно хотите удалить сделку?',
+                                        'Вы действительно хотите удалить лид?',
                                         // textAlign: TextAlign.center,
                                       ),
                                       actions: <Widget>[
@@ -180,7 +178,7 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            deleteDeal(dealsList[index].id);
+                                            deleteLead(leadsList[index].id);
                                             Navigator.pop(context, 'OK');
                                           },
                                           child: const Text(
@@ -197,18 +195,18 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                                   // _showDeleteDealDialog(dealsList[index].id);
                                   // deleteDeal(dealsList[index].id);
                                   ,
-                                  title: dealsList[index].title,
-                                  textColor: dealsList[index].stageId ==
-                                          'Сделка провалена'
+                                  title: leadsList[index].title,
+                                  textColor: leadsList[index].statusId ==
+                                          'Некачественный лид'
                                       ? Colors.white
                                       : Colors.black87,
                                   stageColor:
-                                      stageColor[dealsList[index].stageId] ??
+                                      stageColor[leadsList[index].statusId] ??
                                           Colors.white,
-                                  stageName: dealsList[index].stageId,
+                                  stageName: leadsList[index].statusId,
                                   opportunity: formatter.format(
-                                          dealsList[index].opportunity) +
-                                      ' ${bitrix24.getCurrencyName(dealsList[index].currencyId)}',
+                                          leadsList[index].opportunity) +
+                                      ' ${bitrix24.getCurrencyName(leadsList[index].currencyId)}',
                                   date: dateTime['date']!,
                                   time: dateTime['time']!,
                                 );
@@ -229,15 +227,15 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DealAddPage(
-                          webhook: _webhook,
+                      builder: (context) => LeadAddPage(
+                          webhook: webhook,
                           function: () {
                             Future.delayed(Duration(milliseconds: 1000), () {
                               setState(() {
                                 print('create');
-                                this.dealsListFuture = bitrix24.crmDealList(
+                                this.leadsListFuture = bitrix24.crmLeadList(
                                     start: 0,
-                                    stageIdList: stageMenuButtons.values);
+                                    statusIdList: statusMenuButtons.values);
                               });
                             });
                           }),
@@ -255,14 +253,14 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
     );
   }
 
-  void deleteDeal(String id) {
-    bitrix24.crmDealDelete(id: id).then((value) {
+  void deleteLead(String id) {
+    bitrix24.crmLeadDelete(id: id).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor:
               value == 0 ? Colors.green.shade400 : Colors.red.shade400,
           content: Text(
-            value == 0 ? 'Сделка удалена' : 'Не удалось удалить сделку',
+            value == 0 ? 'Лид удален' : 'Не удалось удалить лид',
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: value == 0 ? Colors.black87 : Colors.white,
@@ -281,17 +279,17 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
 
     Future.delayed(Duration(milliseconds: 1000), () {
       setState(() {
-        this.dealsListFuture = bitrix24.crmDealList(
-            start: 0, stageIdList: stageMenuButtons.values);
+        this.leadsListFuture = bitrix24.crmLeadList(
+            start: 0, statusIdList: statusMenuButtons.values);
       });
     });
   }
 
   bool _handlerScrollNotification(
-      ScrollNotification notification, DealsList? dealsList) {
+      ScrollNotification notification, LeadsList? dealsList) {
     if (notification is ScrollEndNotification) {
       if (scrollController.position.extentAfter == 0) {
-        _updateList(dealsList: dealsList);
+        _updateList(leadsList: dealsList);
       }
     }
     return false;
@@ -302,21 +300,21 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
   Future loadList() async {
     await Future.delayed(Duration(milliseconds: 400));
     setState(() {
-      this.dealsListFuture =
-          bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
+      this.leadsListFuture = bitrix24.crmLeadList(
+          start: 0, statusIdList: statusMenuButtons.values);
     });
   }
 
-  void _updateList({DealsList? dealsList}) {
+  void _updateList({LeadsList? leadsList}) {
     setState(() {
-      if (dealsList != null) {
-        if (dealsList.getNext == 0) {
+      if (leadsList != null) {
+        if (leadsList.getNext == 0) {
           return;
         }
-        dealsListFuture = bitrix24.crmDealList(
-            start: dealsList.getNext,
-            dealsList: dealsList,
-            stageIdList: stageMenuButtons.values);
+        leadsListFuture = bitrix24.crmLeadList(
+            start: leadsList.getNext,
+            leadsList: leadsList,
+            statusIdList: statusMenuButtons.values);
       }
     });
   }

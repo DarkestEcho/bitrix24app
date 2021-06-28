@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:bitrix24/models/deal.dart';
+import 'package:bitrix24/models/lead.dart';
 import 'package:http/http.dart' as http;
 
 class Bitrix24 {
@@ -30,6 +32,50 @@ class Bitrix24 {
     };
     print(data);
     final response = await http.post(Uri.parse(_webhook + 'crm.deal.add'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  Future<int> crmLeadAdd({
+    String? title,
+    String? statusId,
+    String? currencyId,
+    String? opportunity,
+    String? comments,
+    String? name,
+    String? secondName,
+    String? lastName,
+    String? post,
+    String? phone,
+    String? email,
+  }) async {
+    var data = <String, Map<String, dynamic>>{
+      'fields': {
+        "TITLE": title,
+        "STATUS_ID": statusId,
+        "CURRENCY_ID": currencyId,
+        "OPPORTUNITY": opportunity,
+        "COMMENTS": comments,
+        "NAME": name,
+        "SECOND_NAME": secondName,
+        "LAST_NAME": lastName,
+        "POST": post,
+        "PHONE": [
+          {"VALUE": phone, "VALUE_TYPE": "WORK"}
+        ],
+        "EMAIL": [
+          {"VALUE": email, "VALUE_TYPE": "WORK"}
+        ],
+      }
+    };
+    print(data);
+    final response = await http.post(Uri.parse(_webhook + 'crm.lead.add'),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json; charset=UTF-8'});
     // final response = await http.get(Uri.parse(url));
@@ -126,8 +172,47 @@ class Bitrix24 {
     }
   }
 
+  Future<LeadsList> crmLeadList(
+      {required int start,
+      LeadsList? leadsList,
+      required Iterable<List> statusIdList}) async {
+    var data = <String, dynamic>{
+      'start': start.toString(),
+      'order': {'DATE_MODIFY': 'DESC'},
+      'select': ['*', 'UF_*'],
+      'filter': {'!STATUS_ID': getStatusIdList(statusIdList)}
+    };
+
+    final response = await http.post(Uri.parse(_webhook + 'crm.lead.list'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      if (leadsList != null) {
+        LeadsList newDealsList = LeadsList.fromJson(json.decode(response.body));
+        newDealsList.deals.insertAll(0, leadsList.deals);
+
+        return newDealsList;
+      }
+      return LeadsList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error; ${response.reasonPhrase}');
+    }
+  }
+
   Future<int> crmDealDelete({required String id}) async {
     final response = await http.post(Uri.parse(_webhook + 'crm.deal.delete'),
+        body: jsonEncode({'id': id}),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    }
+    return 1;
+  }
+
+  Future<int> crmLeadDelete({required String id}) async {
+    final response = await http.post(Uri.parse(_webhook + 'crm.lead.delete'),
         body: jsonEncode({'id': id}),
         headers: {'Content-Type': 'application/json; charset=UTF-8'});
     // final response = await http.get(Uri.parse(url));

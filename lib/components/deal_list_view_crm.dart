@@ -101,7 +101,7 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
                   future: dealsListFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<Deal> dealsList = snapshot.data!.deals;
+                      List<Lead> dealsList = snapshot.data!.deals;
                       // print(dealsList);
                       return NotificationListener(
                         onNotification: (ScrollNotification notification) {

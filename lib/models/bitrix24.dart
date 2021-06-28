@@ -66,16 +66,54 @@ class Bitrix24 {
         "SECOND_NAME": secondName,
         "LAST_NAME": lastName,
         "POST": post,
-        "PHONE": [
-          {"VALUE": phone, "VALUE_TYPE": "WORK"}
-        ],
-        "EMAIL": [
-          {"VALUE": email, "VALUE_TYPE": "WORK"}
-        ],
+        "UF_CRM_1624918437422": phone,
+        "UF_CRM_1624918449208": email,
       }
     };
     print(data);
     final response = await http.post(Uri.parse(_webhook + 'crm.lead.add'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  Future<int> crmLeadUpdate({
+    required String id,
+    String? title,
+    String? statusId,
+    String? currencyId,
+    String? opportunity,
+    String? comments,
+    String? name,
+    String? secondName,
+    String? lastName,
+    String? post,
+    String? phone,
+    String? email,
+  }) async {
+    var data = <String, dynamic>{
+      'id': id,
+      'fields': {
+        "TITLE": title,
+        "STATUS_ID": statusId,
+        "CURRENCY_ID": currencyId,
+        "OPPORTUNITY": opportunity,
+        "COMMENTS": comments,
+        "NAME": name,
+        "SECOND_NAME": secondName,
+        "LAST_NAME": lastName,
+        "POST": post,
+        "UF_CRM_1624918437422": phone,
+        "UF_CRM_1624918449208": email,
+      }
+    };
+    print(data);
+    final response = await http.post(Uri.parse(_webhook + 'crm.lead.update'),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json; charset=UTF-8'});
     // final response = await http.get(Uri.parse(url));

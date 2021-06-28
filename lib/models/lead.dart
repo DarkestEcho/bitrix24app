@@ -47,8 +47,8 @@ class Lead {
         currencyId: json['CURRENCY_ID'],
         opportunity: double.parse(json['OPPORTUNITY'] ?? '0'),
         post: json['POST'],
-        email: json['EMAIL'],
-        phone: json['PHONE'],
+        email: json['UF_CRM_1624918449208'],
+        phone: json['UF_CRM_1624918437422'],
         honorific: json['HONORIFIC'],
         contactId: json['CONTACT_ID'],
         comments: json['COMMENTS'] == null

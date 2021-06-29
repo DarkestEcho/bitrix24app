@@ -22,7 +22,7 @@ class StageIdCardWidget extends StatelessWidget {
       // color: Colors.blue,
       child: Text(
         stageName,
-        style: TextStyle(color: textColor, fontSize: 17),
+        style: TextStyle(color: textColor, fontSize: 15),
       ),
     );
   }

@@ -54,7 +54,7 @@ class ContactCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    title.length > 22 ? title.substring(0, 20) + "..." : title,
+                    title.length > 18 ? title.substring(0, 16) + "..." : title,
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.left,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 19),

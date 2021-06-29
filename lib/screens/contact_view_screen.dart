@@ -78,6 +78,15 @@ class _ContactViewPageState extends State<ContactViewPage> {
 
   @override
   void initState() {
+    _nameController.text = widget.contact.name;
+    _secondNameController.text = widget.contact.secondName;
+    _lastNameController.text = widget.contact.lastName;
+    _postController.text = widget.contact.post ?? '';
+    _phoneController.text = widget.contact.phone ?? '';
+    _emailController.text = widget.contact.email ?? '';
+    _commentsController.text = widget.contact.comments ?? '';
+    _addressController.text = widget.contact.address ?? '';
+
     super.initState();
   }
 
@@ -136,7 +145,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.lastName,
+                      value: _lastNameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _lastNameFocus,
@@ -149,7 +158,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                     ),
                     getTextFormField(
                       validator: _validateName,
-                      value: widget.contact.name,
+                      value: _nameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _nameFocus,
@@ -161,7 +170,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.secondName,
+                      value: _secondNameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _secondNameFocus,
@@ -174,7 +183,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.post,
+                      value: _postController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _postFocus,
@@ -186,7 +195,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.phone,
+                      value: _phoneController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _phoneFocus,
@@ -203,7 +212,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.email,
+                      value: _emailController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _emailFocus,
@@ -216,7 +225,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.address,
+                      value: _addressController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _addressFocus,
@@ -251,7 +260,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.contact.comments,
+                      value: _commentsController.text,
                       context: context,
                       minLines: 1,
                       maxLines: 4,

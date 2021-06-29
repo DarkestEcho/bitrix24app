@@ -344,7 +344,7 @@ class _LeadAddPageState extends State<LeadAddPage> {
             top: Radius.circular(60),
           ),
         ),
-        duration: Duration(seconds: 1),
+        duration: Duration(seconds: 3),
         backgroundColor: isBad ? Colors.red : Colors.green,
         content: Text(
           message,

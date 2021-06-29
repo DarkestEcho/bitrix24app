@@ -253,7 +253,7 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
           backgroundColor:
               value == 0 ? Colors.green.shade400 : Colors.red.shade400,
           content: Text(
-            value == 0 ? 'Контакт удалена' : 'Не удалось удалить контакт',
+            value == 0 ? 'Контакт удален' : 'Не удалось удалить контакт',
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: value == 0 ? Colors.black87 : Colors.white,

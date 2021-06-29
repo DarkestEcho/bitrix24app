@@ -97,6 +97,16 @@ class _LeadViewPageState extends State<LeadViewPage> {
 
   @override
   void initState() {
+    _titleController.text = widget.lead.title;
+    _oppController.text = widget.lead.opportunity.toString();
+    _nameController.text = widget.lead.name;
+    _secondNameController.text = widget.lead.secondName;
+    _lastNameController.text = widget.lead.lastName;
+    _postController.text = widget.lead.post ?? '';
+    _phoneController.text = widget.lead.phone ?? '';
+    _emailController.text = widget.lead.email ?? '';
+    _commentsController.text = widget.lead.comments ?? '';
+
     _selectedCurrency = widget.lead.currencyId;
 
     _statuses.forEach((key, value) {
@@ -163,7 +173,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                        value: widget.lead.title,
+                        value: _titleController.text,
                         autofocus: true,
                         context: context,
                         currentFocus: _titleFocus,
@@ -183,7 +193,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.opportunity.toString(),
+                      value: _oppController.text,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter(RegExp(r'^[\d\.]+'),
@@ -210,7 +220,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.lastName,
+                      value: _lastNameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _lastNameFocus,
@@ -222,7 +232,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.name,
+                      value: _nameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _nameFocus,
@@ -234,7 +244,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.secondName,
+                      value: _secondNameController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _secondNameFocus,
@@ -247,7 +257,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.post,
+                      value: _postController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _postFocus,
@@ -259,7 +269,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.phone,
+                      value: _phoneController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _phoneFocus,
@@ -276,7 +286,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.email,
+                      value: _emailController.text,
                       autofocus: true,
                       context: context,
                       currentFocus: _emailFocus,
@@ -312,7 +322,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.lead.comments,
+                      value: _commentsController.text,
                       context: context,
                       minLines: 1,
                       maxLines: 4,

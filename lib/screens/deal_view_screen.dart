@@ -84,11 +84,13 @@ class _DealViewPageState extends State<DealViewPage> {
 
   @override
   void initState() {
+    _titleController.text = widget.deal.title;
+    _oppController.text = widget.deal.opportunity.toString();
+    _probController.text = widget.deal.probability ?? '';
+    _contactController.text = widget.deal.contactId ?? '';
+    _commentsController.text = widget.deal.comments ?? '';
+
     _selectedCurrency = widget.deal.currencyId;
-
-    print(widget.deal.stageId == 'Счет на предоплату');
-    print(widget.deal.currencyId);
-
     _stages.forEach((key, value) {
       if (value == widget.deal.stageId) {
         this._selectedStage = key;
@@ -155,7 +157,7 @@ class _DealViewPageState extends State<DealViewPage> {
                     ),
 
                     getTextFormField(
-                        value: widget.deal.title,
+                        value: _titleController.text, //widget.deal.title,
                         autofocus: true,
                         context: context,
                         currentFocus: _titleFocus,
@@ -167,7 +169,7 @@ class _DealViewPageState extends State<DealViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.deal.opportunity.toString(),
+                      value: _oppController.text,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter(RegExp(r'^[\d\.]+'),
@@ -201,7 +203,7 @@ class _DealViewPageState extends State<DealViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                        value: widget.deal.contactId,
+                        value: _contactController.text,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter(RegExp(r'^[\d]+'),
@@ -218,7 +220,7 @@ class _DealViewPageState extends State<DealViewPage> {
                     ),
                     // getDropdownButtonFormField(),
                     getTextFormField(
-                      value: widget.deal.probability,
+                      value: _probController.text,
                       context: context,
                       currentFocus: _probFocus,
                       controller: _probController,
@@ -257,7 +259,7 @@ class _DealViewPageState extends State<DealViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.deal.comments,
+                      value: _commentsController.text,
                       context: context,
                       minLines: 1,
                       maxLines: 4,

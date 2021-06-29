@@ -10,12 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DealListViewCrm extends StatefulWidget {
-  const DealListViewCrm({
-    Key? key,
-    required this.mainPagePaddingRight,
-  }) : super(key: key);
+  const DealListViewCrm(
+      {Key? key,
+      required this.mainPagePaddingRight,
+      this.isSearch = false,
+      this.searchValue})
+      : super(key: key);
 
   final double mainPagePaddingRight;
+  final bool isSearch;
+  final String? searchValue;
 
   @override
   _DealListViewCrmState createState() => _DealListViewCrmState();
@@ -55,9 +59,12 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
       'Сделка провалена': [true, 'LOSE'],
       'Сделка успешна': [true, 'WON'],
     };
-
-    dealsListFuture =
-        bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
+    dealsListFuture = widget.isSearch
+        ? bitrix24.crmDealList(
+            start: 0,
+            stageIdList: stageMenuButtons.values,
+            searchValue: widget.searchValue)
+        : bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
     // getDealsList(start: 0, stageIdList: stageMenuButtons.values);
   }
 
@@ -88,8 +95,13 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
               setState(() {
                 bool _b = stageMenuButtons[value]![0] ?? false;
                 stageMenuButtons[value]![0] = !_b;
-                dealsListFuture = bitrix24.crmDealList(
-                    start: 0, stageIdList: stageMenuButtons.values);
+                dealsListFuture = widget.isSearch
+                    ? bitrix24.crmDealList(
+                        start: 0,
+                        stageIdList: stageMenuButtons.values,
+                        searchValue: widget.searchValue)
+                    : bitrix24.crmDealList(
+                        start: 0, stageIdList: stageMenuButtons.values);
 
                 scrollController.jumpTo(0.0);
               });
@@ -130,11 +142,18 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
                                   onTap: () {
                                     setState(() {
                                       print('view');
-                                      this.dealsListFuture =
-                                          bitrix24.crmDealList(
-                                              start: 0,
-                                              stageIdList:
-                                                  stageMenuButtons.values);
+                                      this.dealsListFuture = dealsListFuture =
+                                          widget.isSearch
+                                              ? bitrix24.crmDealList(
+                                                  start: 0,
+                                                  stageIdList:
+                                                      stageMenuButtons.values,
+                                                  searchValue:
+                                                      widget.searchValue)
+                                              : bitrix24.crmDealList(
+                                                  start: 0,
+                                                  stageIdList:
+                                                      stageMenuButtons.values);
                                     });
                                     Navigator.push(
                                       context,
@@ -149,11 +168,20 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
                                                 setState(() {
                                                   print('update');
                                                   this.dealsListFuture =
-                                                      bitrix24.crmDealList(
-                                                          start: 0,
-                                                          stageIdList:
-                                                              stageMenuButtons
-                                                                  .values);
+                                                      dealsListFuture = widget
+                                                              .isSearch
+                                                          ? bitrix24.crmDealList(
+                                                              start: 0,
+                                                              stageIdList:
+                                                                  stageMenuButtons
+                                                                      .values,
+                                                              searchValue: widget
+                                                                  .searchValue)
+                                                          : bitrix24.crmDealList(
+                                                              start: 0,
+                                                              stageIdList:
+                                                                  stageMenuButtons
+                                                                      .values);
                                                 });
                                               });
                                             }),
@@ -221,31 +249,36 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
                       child: CircularProgressIndicator(),
                     );
                   }),
-              DiamandFloatingButton(
-                onPressed: () {
-                  // setState(() {
-                  // Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DealAddPage(
-                          webhook: webhook,
-                          function: () {
-                            Future.delayed(Duration(milliseconds: 1000), () {
-                              setState(() {
-                                print('create');
-                                this.dealsListFuture = bitrix24.crmDealList(
-                                    start: 0,
-                                    stageIdList: stageMenuButtons.values);
-                              });
-                            });
-                          }),
+              widget.isSearch
+                  ? SizedBox()
+                  : DiamandFloatingButton(
+                      onPressed: () {
+                        // setState(() {
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DealAddPage(
+                                webhook: webhook,
+                                function: () {
+                                  Future.delayed(Duration(milliseconds: 1000),
+                                      () {
+                                    setState(() {
+                                      print('create');
+                                      this.dealsListFuture =
+                                          bitrix24.crmDealList(
+                                              start: 0,
+                                              stageIdList:
+                                                  stageMenuButtons.values);
+                                    });
+                                  });
+                                }),
+                          ),
+                        );
+                        //dealsListFuture = getDealsList(start: 0);
+                        // });
+                      },
                     ),
-                  );
-                  //dealsListFuture = getDealsList(start: 0);
-                  // });
-                },
-              ),
             ]),
           ),
         ],
@@ -280,8 +313,13 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
 
     Future.delayed(Duration(milliseconds: 1000), () {
       setState(() {
-        this.dealsListFuture = bitrix24.crmDealList(
-            start: 0, stageIdList: stageMenuButtons.values);
+        this.dealsListFuture = widget.isSearch
+            ? bitrix24.crmDealList(
+                start: 0,
+                stageIdList: stageMenuButtons.values,
+                searchValue: widget.searchValue)
+            : bitrix24.crmDealList(
+                start: 0, stageIdList: stageMenuButtons.values);
       });
     });
   }
@@ -301,8 +339,13 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
   Future loadList() async {
     await Future.delayed(Duration(milliseconds: 400));
     setState(() {
-      this.dealsListFuture =
-          bitrix24.crmDealList(start: 0, stageIdList: stageMenuButtons.values);
+      this.dealsListFuture = widget.isSearch
+          ? bitrix24.crmDealList(
+              start: 0,
+              stageIdList: stageMenuButtons.values,
+              searchValue: widget.searchValue)
+          : bitrix24.crmDealList(
+              start: 0, stageIdList: stageMenuButtons.values);
     });
   }
 
@@ -312,10 +355,16 @@ class _DealListViewCrmState extends State<DealListViewCrm> {
         if (dealsList.getNext == 0) {
           return;
         }
-        dealsListFuture = bitrix24.crmDealList(
-            start: dealsList.getNext,
-            dealsList: dealsList,
-            stageIdList: stageMenuButtons.values);
+        dealsListFuture = widget.isSearch
+            ? bitrix24.crmDealList(
+                start: 0,
+                stageIdList: stageMenuButtons.values,
+                searchValue: widget.searchValue,
+                dealsList: dealsList)
+            : bitrix24.crmDealList(
+                start: 0,
+                stageIdList: stageMenuButtons.values,
+                dealsList: dealsList);
       }
     });
   }

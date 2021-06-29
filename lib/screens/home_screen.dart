@@ -3,9 +3,9 @@ import 'package:bitrix24/components/deal_list_view_crm.dart';
 import 'package:bitrix24/components/lead_list_view_crm.dart';
 import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:bitrix24/models/menu_item.dart';
+import 'package:bitrix24/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String webhook =
     'https://b24-dxpzij.bitrix24.ru/rest/1/o71asvzlz62e2uxi/';
@@ -183,6 +183,7 @@ class _AppContainerState extends State<AppContainer> {
   }
 
   Container _getSideBar(BuildContext context) {
+    var searchController = TextEditingController();
     return Container(
       width: double.infinity,
       child: Column(
@@ -209,6 +210,19 @@ class _AppContainerState extends State<AppContainer> {
                   Container(
                     child: Expanded(
                       child: TextField(
+                        controller: searchController,
+                        onEditingComplete: () {
+                          print(searchController.text);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchScreen(
+                                  searchValue: searchController.text,
+                                  mainColor: Color(0xFFB1F2B36),
+                                  pageTitle: menuItems[selectedMenuItem],
+                                ),
+                              ));
+                        },
                         focusNode: searchFocusNode,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -278,4 +292,6 @@ class _AppContainerState extends State<AppContainer> {
         return '';
     }
   }
+
+  void findEntity(int type) {}
 }

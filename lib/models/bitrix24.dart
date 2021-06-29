@@ -256,13 +256,29 @@ class Bitrix24 {
   Future<DealsList> crmDealList(
       {required int start,
       DealsList? dealsList,
+      String? searchValue,
       required Iterable<List> stageIdList}) async {
-    var data = <String, dynamic>{
-      'start': start.toString(),
-      'order': {'DATE_MODIFY': 'DESC'},
-      'select': ['*', 'UF_*'],
-      'filter': {'!STAGE_ID': getStageIdList(stageIdList)}
-    };
+    var data;
+    if (searchValue == null) {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+        'filter': {
+          '!STAGE_ID': getStageIdList(stageIdList),
+        }
+      };
+    } else {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+        'filter': {
+          '!STAGE_ID': getStageIdList(stageIdList),
+          '%TITLE': searchValue
+        }
+      };
+    }
 
     final response = await http.post(Uri.parse(_webhook + 'crm.deal.list'),
         body: jsonEncode(data),

@@ -5,6 +5,7 @@ import 'package:bitrix24/components/stage_buttons_menu.dart';
 import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/contact.dart';
 import 'package:bitrix24/screens/contact_add_screen.dart';
+import 'package:bitrix24/screens/contact_view_screen.dart';
 
 import 'package:bitrix24/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -116,34 +117,34 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                                     .dateParser(contactList[index].dataCreate!);
                                 return ContactCard(
                                   onTap: () {
-                                    // setState(() {
-                                    //   print('view');
-                                    //   this.contactsListFuture =
-                                    //       bitrix24.crmContactList(
-                                    //     start: 0,
-                                    //   );
-                                    // });
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => DealViewPage(
-                                    //         deal: contactList[index],
-                                    //         webhook: webhook,
-                                    //         function: () {
-                                    //           Future.delayed(
-                                    //               Duration(milliseconds: 1000),
-                                    //               () {
-                                    //             setState(() {
-                                    //               print('update');
-                                    //               this.contactsListFuture =
-                                    //                   bitrix24.crmContactList(
-                                    //                 start: 0,
-                                    //               );
-                                    //             });
-                                    //           });
-                                    //         }),
-                                    //   ),
-                                    // );
+                                    setState(() {
+                                      print('view');
+                                      this.contactsListFuture =
+                                          bitrix24.crmContactList(
+                                        start: 0,
+                                      );
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ContactViewPage(
+                                            contact: contactList[index],
+                                            webhook: webhook,
+                                            function: () {
+                                              Future.delayed(
+                                                  Duration(milliseconds: 1000),
+                                                  () {
+                                                setState(() {
+                                                  print('update');
+                                                  this.contactsListFuture =
+                                                      bitrix24.crmContactList(
+                                                    start: 0,
+                                                  );
+                                                });
+                                              });
+                                            }),
+                                      ),
+                                    );
                                   },
                                   function: () => showDialog<String>(
                                     context: context,

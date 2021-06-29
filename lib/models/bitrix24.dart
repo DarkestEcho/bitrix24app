@@ -159,6 +159,42 @@ class Bitrix24 {
     }
   }
 
+  Future<int> crmContactUpdate({
+    required String id,
+    required String name,
+    String? secondName,
+    String? lastName,
+    String? post,
+    String? phone,
+    String? email,
+    String? address,
+    String? comments,
+  }) async {
+    var data = <String, dynamic>{
+      'id': id,
+      'fields': {
+        "COMMENTS": comments,
+        "NAME": name,
+        "SECOND_NAME": secondName,
+        "LAST_NAME": lastName,
+        "POST": post,
+        "ADDRESS": address,
+        "UF_CRM_1624968219167": phone,
+        "UF_CRM_1624968168488": email,
+      }
+    };
+    print(data);
+    final response = await http.post(Uri.parse(_webhook + 'crm.contact.update'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
   Future<int> crmDealUdpade({
     required String id,
     String? title,

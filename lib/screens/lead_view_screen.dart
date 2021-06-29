@@ -525,13 +525,15 @@ class _LeadViewPageState extends State<LeadViewPage> {
         labelText: '  $labelText',
         hintText: hintText,
         // prefixIcon: Icon(Icons.edit_rounded),
-        suffixIcon: GestureDetector(
-          child: Icon(
-            Icons.delete_outline,
-            // color: Colors.red,
-          ),
-          onTap: () => controller.clear(),
-        ),
+        suffixIcon: isEdit
+            ? GestureDetector(
+                child: Icon(
+                  Icons.delete_outline,
+                  // color: Colors.red,
+                ),
+                onTap: () => controller.clear(),
+              )
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20.0),
           borderSide: BorderSide(color: Colors.black54, width: 2.0),

@@ -148,13 +148,14 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
+                      validator: _validateName,
                       value: widget.contact.name,
                       autofocus: true,
                       context: context,
                       currentFocus: _nameFocus,
                       nextFocus: _secondNameFocus,
                       controller: _nameController,
-                      labelText: 'Имя',
+                      labelText: isEdit ? 'Имя *' : 'Имя',
                     ),
                     SizedBox(
                       height: 15,
@@ -215,6 +216,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
+                      value: widget.contact.address,
                       autofocus: true,
                       context: context,
                       currentFocus: _addressFocus,
@@ -306,21 +308,28 @@ class _ContactViewPageState extends State<ContactViewPage> {
     return null;
   }
 
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Необходимо ввести имя контакта';
+    }
+    return null;
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
       _showMessage(message: 'Сохранено');
       Bitrix24 bitrix24 = Bitrix24(webhook: widget._webhook);
-      bitrix24.crmLeadUpdate(
-        id: widget.contact.id,
-        name: _nameController.text,
-        secondName: _secondNameController.text,
-        lastName: _lastNameController.text,
-        post: _postController.text,
-        phone: _phoneController.text,
-        email: _emailController.text,
-        comments: _commentsController.text,
-      );
+      bitrix24.crmContactUpdate(
+          id: widget.contact.id,
+          name: _nameController.text,
+          secondName: _secondNameController.text,
+          lastName: _lastNameController.text,
+          post: _postController.text,
+          phone: _phoneController.text,
+          email: _emailController.text,
+          comments: _commentsController.text,
+          address: _addressController.text);
 
       widget.function();
       Navigator.pop(context);
@@ -350,7 +359,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
           style: TextStyle(
               color: isBad ? Colors.white : Colors.black,
               fontWeight: FontWeight.w600,
-              fontSize: 20),
+              fontSize: 18),
         ),
       ),
     );
@@ -391,13 +400,15 @@ class _ContactViewPageState extends State<ContactViewPage> {
         labelText: '  $labelText',
         hintText: hintText,
         // prefixIcon: Icon(Icons.edit_rounded),
-        suffixIcon: GestureDetector(
-          child: Icon(
-            Icons.delete_outline,
-            // color: Colors.red,
-          ),
-          onTap: () => controller.clear(),
-        ),
+        suffixIcon: isEdit
+            ? GestureDetector(
+                child: Icon(
+                  Icons.delete_outline,
+                  // color: Colors.red,
+                ),
+                onTap: () => controller.clear(),
+              )
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20.0),
           borderSide: BorderSide(color: Colors.black54, width: 2.0),

@@ -36,15 +36,6 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
     bitrix24 = Bitrix24(webhook: webhook);
 
     scrollController = ScrollController()..addListener(_scrollListener);
-    stageMenuButtons = {
-      'Новая': [true, 'NEW'],
-      'Подготовка документов': [true, 'PREPARATION'],
-      'Счет на предоплату': [true, 'PREPAYMENT_INVOICE'],
-      'В работе': [true, 'EXECUTING'],
-      'Финальный счет': [true, 'FINAL_INVOICE'],
-      'Сделка провалена': [true, 'LOSE'],
-      'Сделка успешна': [true, 'WON'],
-    };
 
     contactsListFuture = bitrix24.crmContactList(start: 0);
   }
@@ -57,7 +48,6 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return Container(
       // width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(right: widget.mainPagePaddingRight),
@@ -70,20 +60,30 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
       // padding: EdgeInsets.only(right: mainPagePaddingRight),
       child: Column(
         children: [
-          StageButtonsMenu(
-            stageButtonsStatus: stageMenuButtons,
-            function: (value) {
-              setState(() {
-                bool _b = stageMenuButtons[value]![0] ?? false;
-                stageMenuButtons[value]![0] = !_b;
-                contactsListFuture = bitrix24.crmContactList(
-                  start: 0,
-                );
+          // Container(
+          //   height: 100,
+          //   child: Column(
+          //     children: [
+          //       Row(
+          //         children: [],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // StageButtonsMenu(
+          //   stageButtonsStatus: stageMenuButtons,
+          //   function: (value) {
+          //     setState(() {
+          //       bool _b = stageMenuButtons[value]![0] ?? false;
+          //       stageMenuButtons[value]![0] = !_b;
+          //       contactsListFuture = bitrix24.crmContactList(
+          //         start: 0,
+          //       );
 
-                scrollController.jumpTo(0.0);
-              });
-            },
-          ),
+          //       scrollController.jumpTo(0.0);
+          //     });
+          //   },
+          // ),
           Expanded(
             child: Stack(alignment: Alignment.bottomRight, children: [
               FutureBuilder<ContactList>(

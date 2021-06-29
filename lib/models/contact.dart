@@ -48,7 +48,7 @@ class Contact {
 }
 
 class ContactList {
-  List<Contact> deals;
+  List<Contact> contacts;
   int _total;
   int? _next;
 
@@ -61,17 +61,17 @@ class ContactList {
     _total += 50;
   }
 
-  ContactList({required this.deals, required int total, int? next})
+  ContactList({required this.contacts, required int total, int? next})
       : this._total = total,
         this._next = next;
 
   factory ContactList.fromJson(Map<String, dynamic> json) {
     var dealsJson = json['result'] as List;
 
-    List<Contact> dealsList =
+    List<Contact> contactList =
         dealsJson.map((i) => Contact.fromJson(i)).toList();
     return ContactList(
-        deals: dealsList, total: json['total'], next: json['next']);
+        contacts: contactList, total: json['total'], next: json['next']);
   }
 }
 
@@ -79,16 +79,4 @@ String removeAllHtmlTags(String htmlText) {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
   return htmlText.replaceAll(exp, '');
-}
-
-List<String> getStatusIdList(Iterable<List<dynamic>> statusId) {
-  List<String> statusIdList = [];
-
-  statusId.forEach((value) {
-    if (!value[0]) {
-      statusIdList.add(value[1]);
-    }
-  });
-
-  return statusIdList;
 }

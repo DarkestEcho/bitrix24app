@@ -1,80 +1,74 @@
 import 'package:bitrix24/models/bitrix24.dart';
-import 'package:bitrix24/models/deal.dart';
+import 'package:bitrix24/models/contact.dart';
+
 import 'package:bitrix24/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class DealViewPage extends StatefulWidget {
+class ContactViewPage extends StatefulWidget {
   final Function() function;
   final String _webhook;
-  final Deal deal;
-  const DealViewPage({
+  final Contact contact;
+  const ContactViewPage({
     Key? key,
-    required this.deal,
+    required this.contact,
     required String webhook,
     required this.function,
   })  : this._webhook = webhook,
         super(key: key);
 
   @override
-  _DealViewPageState createState() => _DealViewPageState();
+  _ContactViewPageState createState() => _ContactViewPageState();
 }
 
-class _DealViewPageState extends State<DealViewPage> {
+class _ContactViewPageState extends State<ContactViewPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _titleController = TextEditingController();
-  final _oppController = TextEditingController();
-
-  final _probController = TextEditingController();
-  final _contactController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _secondNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _postController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _commentsController = TextEditingController();
   final _dateCreateController = TextEditingController();
   final _dateModifyController = TextEditingController();
   final _idController = TextEditingController();
+  final _addressController = TextEditingController();
 
-  final _titleFocus = FocusNode();
-  final _oppFocus = FocusNode();
+  final _nameFocus = FocusNode();
+  final _secondNameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
+  final _postFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _emailFocus = FocusNode();
+  final _idFocus = FocusNode();
+  final _addressFocus = FocusNode();
 
-  final _probFocus = FocusNode();
-  final _contactFocus = FocusNode();
   final _commentsFocus = FocusNode();
   final _dateCreateFocus = FocusNode();
   final _dateModifyFocus = FocusNode();
-  final _idFocus = FocusNode();
-
-  Map<String, String> _currencies = {
-    'RUB': 'Российский рубль',
-    'USD': 'Доллар США',
-    'EUR': 'Евро',
-    'UAH': 'Гривна',
-    'BYN': 'Белорусский рубль'
-  };
-
-  Map<String, String> _stages = {
-    'NEW': 'Новая',
-    'PREPARATION': 'Подготовка документов',
-    'PREPAYMENT_INVOICE': 'Счет на предоплату',
-    'EXECUTING': 'В работе',
-    'FINAL_INVOICE': 'Финальный счет',
-    'WON': 'Сделка успешна',
-    'LOSE': 'Сделка провалена'
-  };
 
   void dispose() {
-    _titleController.dispose();
-    _oppController.dispose();
-    _probController.dispose();
-    _contactController.dispose();
+    _addressController.dispose();
+    _secondNameController.dispose();
+    _nameController.dispose();
+    _lastNameController.dispose();
+    _postController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
     _commentsController.dispose();
     _dateCreateController.dispose();
     _dateModifyController.dispose();
     _idController.dispose();
 
-    _titleFocus.dispose();
-    _oppFocus.dispose();
-    _probFocus.dispose();
-    _contactFocus.dispose();
+    _addressFocus.dispose();
+    _nameFocus.dispose();
+    _secondNameFocus.dispose();
+    _lastNameFocus.dispose();
+    _phoneFocus.dispose();
+    _postFocus.dispose();
+    _emailFocus.dispose();
     _commentsFocus.dispose();
     _dateCreateFocus.dispose();
     _dateModifyFocus.dispose();
@@ -84,31 +78,18 @@ class _DealViewPageState extends State<DealViewPage> {
 
   @override
   void initState() {
-    _selectedCurrency = widget.deal.currencyId;
-
-    print(widget.deal.stageId == 'Счет на предоплату');
-    print(widget.deal.currencyId);
-
-    _stages.forEach((key, value) {
-      if (value == widget.deal.stageId) {
-        this._selectedStage = key;
-      }
-    });
     super.initState();
   }
-
-  String _selectedCurrency = 'RUB';
-  String _selectedStage = 'NEW';
 
   bool isEdit = false;
   Bitrix24 bitrix24 = Bitrix24(webhook: webhook);
 
   @override
   Widget build(BuildContext context) {
-    Map<String, String> createDateTime =
-        bitrix24.dateParser(widget.deal.dataCreate!);
+    Map<String, String> dateTime =
+        bitrix24.dateParser(widget.contact.dataCreate!);
     Map<String, String> modifyDateTime =
-        bitrix24.dateParser(widget.deal.dateModify!);
+        bitrix24.dateParser(widget.contact.dateModify!);
     return Scaffold(
       // backgroundColor: Colors.deepOrange,
       appBar: AppBar(
@@ -143,89 +124,77 @@ class _DealViewPageState extends State<DealViewPage> {
                   padding: EdgeInsets.all(16.0),
                   children: [
                     getTextFormField(
-                      value: widget.deal.id,
+                      value: widget.contact.id,
                       context: context,
                       currentFocus: _idFocus,
                       controller: _idController,
                       labelText: 'ID',
                       isEnabled: false,
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
 
-                    getTextFormField(
-                        value: widget.deal.title,
-                        autofocus: true,
-                        context: context,
-                        currentFocus: _titleFocus,
-                        nextFocus: _oppFocus,
-                        controller: _titleController,
-                        labelText: 'Название',
-                        hintText: 'Сделка #'),
                     SizedBox(
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.deal.opportunity.toString(),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter(RegExp(r'^[\d\.]+'),
-                            allow: true),
-                      ],
+                      value: widget.contact.lastName,
+                      autofocus: true,
                       context: context,
-                      currentFocus: _oppFocus,
-                      nextFocus: _contactFocus,
-                      controller: _oppController,
-                      labelText: 'Сумма',
-                      validator: _validateOpportunity,
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    getDropdownButtonFormField(
-                      // width: 186,
-                      items: _currencies,
-                      labelText: 'Валюта',
-                    ),
-
-                    SizedBox(
-                      height: 15,
-                    ),
-                    getDropdownButtonFormField(
-                      // width: 148,
-                      items: _stages,
-                      labelText: 'Стадия',
+                      currentFocus: _lastNameFocus,
+                      nextFocus: _nameFocus,
+                      controller: _lastNameController,
+                      labelText: 'Фамилия',
                     ),
                     SizedBox(
                       height: 15,
                     ),
                     getTextFormField(
-                        value: widget.deal.contactId,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter(RegExp(r'^[\d]+'),
-                              allow: true),
-                        ],
-                        context: context,
-                        currentFocus: _contactFocus,
-                        controller: _contactController,
-                        nextFocus: _probFocus,
-                        labelText: 'Контакт',
-                        hintText: 'Id контакта'),
+                      value: widget.contact.name,
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _nameFocus,
+                      nextFocus: _secondNameFocus,
+                      controller: _nameController,
+                      labelText: 'Имя',
+                    ),
                     SizedBox(
                       height: 15,
+                    ),
+                    getTextFormField(
+                      value: widget.contact.secondName,
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _secondNameFocus,
+                      nextFocus: _postFocus,
+                      controller: _secondNameController,
+                      labelText: 'Отчество',
                     ),
                     // getDropdownButtonFormField(),
+                    SizedBox(
+                      height: 15,
+                    ),
                     getTextFormField(
-                      value: widget.deal.probability,
+                      value: widget.contact.post,
+                      autofocus: true,
                       context: context,
-                      currentFocus: _probFocus,
-                      controller: _probController,
-                      labelText: 'Вероятность',
-                      keyboardType: TextInputType.number,
+                      currentFocus: _postFocus,
+                      nextFocus: _phoneFocus,
+                      controller: _postController,
+                      labelText: 'Должность',
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                      value: widget.contact.phone,
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _phoneFocus,
+                      nextFocus: _emailFocus,
+                      controller: _phoneController,
+                      labelText: 'Телефон',
                       inputFormatters: [
-                        FilteringTextInputFormatter(RegExp(r'^[\d]+'),
+                        // FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter(RegExp(r'^[()\d\+]+'),
                             allow: true),
                       ],
                     ),
@@ -233,12 +202,35 @@ class _DealViewPageState extends State<DealViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value:
-                          "${createDateTime['date']} ${createDateTime['time']}",
+                      value: widget.contact.email,
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _emailFocus,
+                      nextFocus: _commentsFocus,
+                      controller: _emailController,
+                      labelText: 'Email',
+                      validator: _validateEmail,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                      autofocus: true,
+                      context: context,
+                      currentFocus: _addressFocus,
+                      nextFocus: _commentsFocus,
+                      controller: _addressController,
+                      labelText: 'Адрес',
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    getTextFormField(
+                      value: "${dateTime['date']} ${dateTime['time']}",
                       context: context,
                       currentFocus: _dateCreateFocus,
                       controller: _dateCreateController,
-                      labelText: 'Дата начала',
+                      labelText: 'Дата создания',
                       isEnabled: false,
                     ),
                     SizedBox(
@@ -257,7 +249,7 @@ class _DealViewPageState extends State<DealViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
-                      value: widget.deal.comments,
+                      value: widget.contact.comments,
                       context: context,
                       minLines: 1,
                       maxLines: 4,
@@ -271,9 +263,7 @@ class _DealViewPageState extends State<DealViewPage> {
                     ),
                     isEdit
                         ? ElevatedButton(
-                            onPressed: () {
-                              _submitForm();
-                            },
+                            onPressed: () => _submitForm(),
                             child: Text('Сохранить',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20)),
@@ -303,22 +293,17 @@ class _DealViewPageState extends State<DealViewPage> {
     );
   }
 
-  String? _validateOpportunity(String? value) {
+  String? _validateEmail(String? value) {
     if (value == null) {
       return null;
     }
-
-    List<String> list = value.split(RegExp(""));
-    int c = 0;
-    list.forEach((element) {
-      if (element == '.') {
-        c++;
-      }
-    });
-
-    if (c > 1) {
-      return 'Значение введено некорректно';
+    if (value.isEmpty) {
+      return null;
     }
+    if (!_emailController.text.contains('@') || !value.contains('.')) {
+      return 'Неправильный email-адрес';
+    }
+    return null;
   }
 
   void _submitForm() {
@@ -326,15 +311,16 @@ class _DealViewPageState extends State<DealViewPage> {
       _formKey.currentState?.save();
       _showMessage(message: 'Сохранено');
       Bitrix24 bitrix24 = Bitrix24(webhook: widget._webhook);
-      bitrix24.crmDealUdpade(
-          id: widget.deal.id,
-          title: _titleController.text,
-          opportunity: _oppController.text,
-          stageId: _selectedStage,
-          contactId: _contactController.text,
-          comments: _commentsController.text,
-          probability: _probController.text,
-          currencyId: _selectedCurrency);
+      bitrix24.crmLeadUpdate(
+        id: widget.contact.id,
+        name: _nameController.text,
+        secondName: _secondNameController.text,
+        lastName: _lastNameController.text,
+        post: _postController.text,
+        phone: _phoneController.text,
+        email: _emailController.text,
+        comments: _commentsController.text,
+      );
 
       widget.function();
       Navigator.pop(context);
@@ -346,56 +332,6 @@ class _DealViewPageState extends State<DealViewPage> {
         isBad: true);
 
     // _showMessage(message: 'Форма заполнена некорректно ', isBad: true);
-  }
-
-  Container getDropdownButtonFormField(
-      {required String labelText,
-      required Map<String, String> items,
-      double? width}) {
-    return Container(
-      // width: 200,
-      margin: width == null ? null : EdgeInsets.only(right: width),
-      child: DropdownButtonFormField(
-        decoration: InputDecoration(
-          labelStyle: TextStyle(color: Colors.black87),
-          labelText: labelText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFB151E26), width: 2.0),
-          ),
-        ),
-        items: items.values.map((item) {
-          return DropdownMenuItem(
-            child: Text(item),
-            value: item,
-          );
-        }).toList(),
-        onChanged: isEdit
-            ? (currency) {
-                print(currency);
-                setState(
-                  () {
-                    items.forEach((key, value) {
-                      if (value == currency) {
-                        if (labelText == 'Валюта')
-                          this._selectedCurrency = key;
-                        else
-                          this._selectedStage = key;
-                      }
-                    });
-                  },
-                );
-              }
-            : null,
-        value: labelText == 'Валюта'
-            ? items[this._selectedCurrency]
-            : items[this._selectedStage],
-
-        // validator: (val) {
-        //   return val == null ? 'Please select a country' : null;
-        // },
-      ),
-    );
   }
 
   void _showMessage({required String message, bool isBad = false}) {

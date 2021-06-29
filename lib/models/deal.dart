@@ -1,4 +1,4 @@
-class Lead {
+class Deal {
   final String id;
 
   String title;
@@ -14,7 +14,7 @@ class Lead {
   String? dataCreate;
   String? dateModify;
 
-  Lead(
+  Deal(
       {required this.id,
       required this.title,
       required this.typeId,
@@ -28,8 +28,8 @@ class Lead {
       this.dataCreate,
       this.dateModify});
 
-  factory Lead.fromJson(Map<String, dynamic> json) {
-    return Lead(
+  factory Deal.fromJson(Map<String, dynamic> json) {
+    return Deal(
         id: json['ID'],
         title: json['TITLE'],
         typeId: json['TYPE_ID'] ?? '',
@@ -67,7 +67,7 @@ String? getStageWord(String stageId) {
 }
 
 class DealsList {
-  List<Lead> deals;
+  List<Deal> deals;
   int _total;
   int? _next;
 
@@ -87,7 +87,7 @@ class DealsList {
   factory DealsList.fromJson(Map<String, dynamic> json) {
     var dealsJson = json['result'] as List;
 
-    List<Lead> dealsList = dealsJson.map((i) => Lead.fromJson(i)).toList();
+    List<Deal> dealsList = dealsJson.map((i) => Deal.fromJson(i)).toList();
     return DealsList(
         deals: dealsList, total: json['total'], next: json['next']);
   }

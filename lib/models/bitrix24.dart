@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:bitrix24/models/contact.dart';
 import 'package:bitrix24/models/deal.dart';
 import 'package:bitrix24/models/lead.dart';
 import 'package:http/http.dart' as http;
@@ -72,6 +73,40 @@ class Bitrix24 {
     };
     print(data);
     final response = await http.post(Uri.parse(_webhook + 'crm.lead.add'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  Future<int> crmContactAdd({
+    required String name,
+    String? secondName,
+    String? lastName,
+    String? post,
+    String? phone,
+    String? email,
+    String? address,
+    String? comments,
+  }) async {
+    var data = <String, Map<String, dynamic>>{
+      'fields': {
+        "COMMENTS": comments,
+        "NAME": name,
+        "SECOND_NAME": secondName,
+        "LAST_NAME": lastName,
+        "POST": post,
+        "ADDRESS": address,
+        "UF_CRM_1624968219167": phone,
+        "UF_CRM_1624968168488": email,
+      }
+    };
+    print(data);
+    final response = await http.post(Uri.parse(_webhook + 'crm.contact.add'),
         body: jsonEncode(data),
         headers: {'Content-Type': 'application/json; charset=UTF-8'});
     // final response = await http.get(Uri.parse(url));
@@ -238,6 +273,34 @@ class Bitrix24 {
     }
   }
 
+  Future<ContactList> crmContactList({
+    required int start,
+    ContactList? contactList,
+  }) async {
+    var data = <String, dynamic>{
+      'start': start.toString(),
+      'order': {'DATE_MODIFY': 'DESC'},
+      'select': ['*', 'UF_*'],
+    };
+
+    final response = await http.post(Uri.parse(_webhook + 'crm.contact.list'),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      if (contactList != null) {
+        ContactList newContactList =
+            ContactList.fromJson(json.decode(response.body));
+        newContactList.contacts.insertAll(0, contactList.contacts);
+
+        return newContactList;
+      }
+      return ContactList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error; ${response.reasonPhrase}');
+    }
+  }
+
   Future<int> crmDealDelete({required String id}) async {
     final response = await http.post(Uri.parse(_webhook + 'crm.deal.delete'),
         body: jsonEncode({'id': id}),
@@ -251,6 +314,17 @@ class Bitrix24 {
 
   Future<int> crmLeadDelete({required String id}) async {
     final response = await http.post(Uri.parse(_webhook + 'crm.lead.delete'),
+        body: jsonEncode({'id': id}),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'});
+    // final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return 0;
+    }
+    return 1;
+  }
+
+  Future<int> crmContactDelete({required String id}) async {
+    final response = await http.post(Uri.parse(_webhook + 'crm.contact.delete'),
         body: jsonEncode({'id': id}),
         headers: {'Content-Type': 'application/json; charset=UTF-8'});
     // final response = await http.get(Uri.parse(url));

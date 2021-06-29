@@ -12,12 +12,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class LeadListViewCrm extends StatefulWidget {
-  const LeadListViewCrm({
-    Key? key,
-    required this.mainPagePaddingRight,
-  }) : super(key: key);
+  const LeadListViewCrm(
+      {Key? key,
+      required this.mainPagePaddingRight,
+      this.isSearch = false,
+      this.searchValue})
+      : super(key: key);
 
   final double mainPagePaddingRight;
+  final bool isSearch;
+  final String? searchValue;
 
   @override
   _LeadListViewCrmState createState() => _LeadListViewCrmState();
@@ -55,8 +59,15 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
       'Качественный лид': [true, 'CONVERTED'],
     };
 
-    leadsListFuture =
-        bitrix24.crmLeadList(start: 0, statusIdList: statusMenuButtons.values);
+    leadsListFuture = widget.isSearch
+        ? bitrix24.crmLeadList(
+            start: 0,
+            statusIdList: statusMenuButtons.values,
+            searchValue: widget.searchValue)
+        : bitrix24.crmLeadList(
+            start: 0,
+            statusIdList: statusMenuButtons.values,
+          );
     // getDealsList(start: 0, stageIdList: stageMenuButtons.values);
   }
 
@@ -87,8 +98,15 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
               setState(() {
                 bool _b = statusMenuButtons[value]![0] ?? false;
                 statusMenuButtons[value]![0] = !_b;
-                leadsListFuture = bitrix24.crmLeadList(
-                    start: 0, statusIdList: statusMenuButtons.values);
+                leadsListFuture = widget.isSearch
+                    ? bitrix24.crmLeadList(
+                        start: 0,
+                        statusIdList: statusMenuButtons.values,
+                        searchValue: widget.searchValue)
+                    : bitrix24.crmLeadList(
+                        start: 0,
+                        statusIdList: statusMenuButtons.values,
+                      );
 
                 scrollController.jumpTo(0.0);
               });
@@ -129,11 +147,17 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                                   onTap: () {
                                     setState(() {
                                       print('view');
-                                      this.leadsListFuture =
-                                          bitrix24.crmLeadList(
+                                      this.leadsListFuture = widget.isSearch
+                                          ? bitrix24.crmLeadList(
                                               start: 0,
                                               statusIdList:
-                                                  statusMenuButtons.values);
+                                                  statusMenuButtons.values,
+                                              searchValue: widget.searchValue)
+                                          : bitrix24.crmLeadList(
+                                              start: 0,
+                                              statusIdList:
+                                                  statusMenuButtons.values,
+                                            );
                                     });
                                     Navigator.push(
                                       context,
@@ -147,12 +171,21 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                                                   () {
                                                 setState(() {
                                                   print('update');
-                                                  this.leadsListFuture =
-                                                      bitrix24.crmLeadList(
+                                                  this.leadsListFuture = widget
+                                                          .isSearch
+                                                      ? bitrix24.crmLeadList(
                                                           start: 0,
                                                           statusIdList:
                                                               statusMenuButtons
-                                                                  .values);
+                                                                  .values,
+                                                          searchValue: widget
+                                                              .searchValue)
+                                                      : bitrix24.crmLeadList(
+                                                          start: 0,
+                                                          statusIdList:
+                                                              statusMenuButtons
+                                                                  .values,
+                                                        );
                                                 });
                                               });
                                             }),
@@ -220,31 +253,36 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
                       child: CircularProgressIndicator(),
                     );
                   }),
-              DiamandFloatingButton(
-                onPressed: () {
-                  // setState(() {
-                  // Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LeadAddPage(
-                          webhook: webhook,
-                          function: () {
-                            Future.delayed(Duration(milliseconds: 1000), () {
-                              setState(() {
-                                print('create');
-                                this.leadsListFuture = bitrix24.crmLeadList(
-                                    start: 0,
-                                    statusIdList: statusMenuButtons.values);
-                              });
-                            });
-                          }),
+              widget.isSearch
+                  ? SizedBox()
+                  : DiamandFloatingButton(
+                      onPressed: () {
+                        // setState(() {
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LeadAddPage(
+                                webhook: webhook,
+                                function: () {
+                                  Future.delayed(Duration(milliseconds: 1000),
+                                      () {
+                                    setState(() {
+                                      print('create');
+                                      this.leadsListFuture =
+                                          bitrix24.crmLeadList(
+                                              start: 0,
+                                              statusIdList:
+                                                  statusMenuButtons.values);
+                                    });
+                                  });
+                                }),
+                          ),
+                        );
+                        //dealsListFuture = getDealsList(start: 0);
+                        // });
+                      },
                     ),
-                  );
-                  //dealsListFuture = getDealsList(start: 0);
-                  // });
-                },
-              ),
             ]),
           ),
         ],
@@ -279,8 +317,15 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
 
     Future.delayed(Duration(milliseconds: 1000), () {
       setState(() {
-        this.leadsListFuture = bitrix24.crmLeadList(
-            start: 0, statusIdList: statusMenuButtons.values);
+        this.leadsListFuture = widget.isSearch
+            ? bitrix24.crmLeadList(
+                start: 0,
+                statusIdList: statusMenuButtons.values,
+                searchValue: widget.searchValue)
+            : bitrix24.crmLeadList(
+                start: 0,
+                statusIdList: statusMenuButtons.values,
+              );
       });
     });
   }
@@ -300,8 +345,15 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
   Future loadList() async {
     await Future.delayed(Duration(milliseconds: 400));
     setState(() {
-      this.leadsListFuture = bitrix24.crmLeadList(
-          start: 0, statusIdList: statusMenuButtons.values);
+      this.leadsListFuture = widget.isSearch
+          ? bitrix24.crmLeadList(
+              start: 0,
+              statusIdList: statusMenuButtons.values,
+              searchValue: widget.searchValue)
+          : bitrix24.crmLeadList(
+              start: 0,
+              statusIdList: statusMenuButtons.values,
+            );
     });
   }
 
@@ -311,10 +363,17 @@ class _LeadListViewCrmState extends State<LeadListViewCrm> {
         if (leadsList.getNext == 0) {
           return;
         }
-        leadsListFuture = bitrix24.crmLeadList(
-            start: leadsList.getNext,
-            leadsList: leadsList,
-            statusIdList: statusMenuButtons.values);
+        leadsListFuture = widget.isSearch
+            ? bitrix24.crmLeadList(
+                start: 0,
+                statusIdList: statusMenuButtons.values,
+                searchValue: widget.searchValue,
+                leadsList: leadsList,
+              )
+            : bitrix24.crmLeadList(
+                start: leadsList.getNext,
+                leadsList: leadsList,
+                statusIdList: statusMenuButtons.values);
       }
     });
   }

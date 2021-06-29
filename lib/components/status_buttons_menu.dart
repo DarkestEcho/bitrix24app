@@ -41,6 +41,7 @@ class StatusButtonsMenu extends StatelessWidget {
           ),
           StageMenuButton(
             stageName: 'Некачественный лид',
+            textColor: Colors.white,
             color: (statusButtonsStatus['Некачественный лид']![0] ?? true)
                 ? Colors.red
                 : Colors.white38,

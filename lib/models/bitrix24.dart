@@ -300,13 +300,27 @@ class Bitrix24 {
   Future<LeadsList> crmLeadList(
       {required int start,
       LeadsList? leadsList,
+      String? searchValue,
       required Iterable<List> statusIdList}) async {
-    var data = <String, dynamic>{
-      'start': start.toString(),
-      'order': {'DATE_MODIFY': 'DESC'},
-      'select': ['*', 'UF_*'],
-      'filter': {'!STATUS_ID': getStatusIdList(statusIdList)}
-    };
+    var data;
+    if (searchValue == null) {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+        'filter': {'!STATUS_ID': getStatusIdList(statusIdList)}
+      };
+    } else {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+        'filter': {
+          '!STATUS_ID': getStatusIdList(statusIdList),
+          '%TITLE': searchValue
+        }
+      };
+    }
 
     final response = await http.post(Uri.parse(_webhook + 'crm.lead.list'),
         body: jsonEncode(data),
@@ -328,12 +342,23 @@ class Bitrix24 {
   Future<ContactList> crmContactList({
     required int start,
     ContactList? contactList,
+    String? searchValue,
   }) async {
-    var data = <String, dynamic>{
-      'start': start.toString(),
-      'order': {'DATE_MODIFY': 'DESC'},
-      'select': ['*', 'UF_*'],
-    };
+    var data;
+    if (searchValue == null) {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+      };
+    } else {
+      data = <String, dynamic>{
+        'start': start.toString(),
+        'order': {'DATE_MODIFY': 'DESC'},
+        'select': ['*', 'UF_*'],
+        'filter': {'%NAME': searchValue}
+      };
+    }
 
     final response = await http.post(Uri.parse(_webhook + 'crm.contact.list'),
         body: jsonEncode(data),

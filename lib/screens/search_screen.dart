@@ -113,6 +113,8 @@ class _AppContainerState extends State<AppContainer> {
     if (widget.pageTitle == menuItems[0]) {
       return LeadListViewCrm(
         mainPagePaddingRight: mainPagePaddingRight,
+        isSearch: true,
+        searchValue: widget.searchValue,
       );
     }
     if (widget.pageTitle == menuItems[1]) {
@@ -123,7 +125,11 @@ class _AppContainerState extends State<AppContainer> {
       );
     }
     if (widget.pageTitle == menuItems[2]) {
-      return ContactListViewCrm(mainPagePaddingRight: mainPagePaddingRight);
+      return ContactListViewCrm(
+        mainPagePaddingRight: mainPagePaddingRight,
+        isSearch: true,
+        searchValue: widget.searchValue,
+      );
     }
     return Container(
       margin: EdgeInsets.only(right: mainPagePaddingRight),

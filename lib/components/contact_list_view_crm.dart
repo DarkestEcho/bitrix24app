@@ -1,7 +1,7 @@
 import 'package:bitrix24/components/contact_card.dart';
 
 import 'package:bitrix24/components/diamond_floating_button.dart';
-import 'package:bitrix24/components/stage_buttons_menu.dart';
+
 import 'package:bitrix24/models/bitrix24.dart';
 import 'package:bitrix24/models/contact.dart';
 import 'package:bitrix24/screens/contact_add_screen.dart';
@@ -11,12 +11,16 @@ import 'package:bitrix24/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class ContactListViewCrm extends StatefulWidget {
-  const ContactListViewCrm({
-    Key? key,
-    required this.mainPagePaddingRight,
-  }) : super(key: key);
+  const ContactListViewCrm(
+      {Key? key,
+      required this.mainPagePaddingRight,
+      this.isSearch = false,
+      this.searchValue})
+      : super(key: key);
 
   final double mainPagePaddingRight;
+  final bool isSearch;
+  final String? searchValue;
 
   @override
   _ContactListViewCrmState createState() => _ContactListViewCrmState();
@@ -37,7 +41,9 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
 
     scrollController = ScrollController()..addListener(_scrollListener);
 
-    contactsListFuture = bitrix24.crmContactList(start: 0);
+    contactsListFuture = widget.isSearch
+        ? bitrix24.crmContactList(start: 0, searchValue: widget.searchValue)
+        : bitrix24.crmContactList(start: 0);
   }
 
   @override
@@ -119,10 +125,11 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                                   onTap: () {
                                     setState(() {
                                       print('view');
-                                      this.contactsListFuture =
-                                          bitrix24.crmContactList(
-                                        start: 0,
-                                      );
+                                      this.contactsListFuture = widget.isSearch
+                                          ? bitrix24.crmContactList(
+                                              start: 0,
+                                              searchValue: widget.searchValue)
+                                          : bitrix24.crmContactList(start: 0);
                                     });
                                     Navigator.push(
                                       context,
@@ -136,10 +143,14 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                                                   () {
                                                 setState(() {
                                                   print('update');
-                                                  this.contactsListFuture =
-                                                      bitrix24.crmContactList(
-                                                    start: 0,
-                                                  );
+                                                  this.contactsListFuture = widget
+                                                          .isSearch
+                                                      ? bitrix24.crmContactList(
+                                                          start: 0,
+                                                          searchValue: widget
+                                                              .searchValue)
+                                                      : bitrix24.crmContactList(
+                                                          start: 0);
                                                 });
                                               });
                                             }),
@@ -198,32 +209,35 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
                       child: CircularProgressIndicator(),
                     );
                   }),
-              DiamandFloatingButton(
-                onPressed: () {
-                  // setState(() {
-                  // Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ContactAddPage(
-                          webhook: webhook,
-                          function: () {
-                            Future.delayed(Duration(milliseconds: 1000), () {
-                              setState(() {
-                                print('create');
-                                this.contactsListFuture =
-                                    bitrix24.crmContactList(
-                                  start: 0,
-                                );
-                              });
-                            });
-                          }),
+              widget.isSearch
+                  ? SizedBox()
+                  : DiamandFloatingButton(
+                      onPressed: () {
+                        // setState(() {
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContactAddPage(
+                                webhook: webhook,
+                                function: () {
+                                  Future.delayed(Duration(milliseconds: 1000),
+                                      () {
+                                    setState(() {
+                                      print('create');
+                                      this.contactsListFuture =
+                                          bitrix24.crmContactList(
+                                        start: 0,
+                                      );
+                                    });
+                                  });
+                                }),
+                          ),
+                        );
+                        //dealsListFuture = getDealsList(start: 0);
+                        // });
+                      },
                     ),
-                  );
-                  //dealsListFuture = getDealsList(start: 0);
-                  // });
-                },
-              ),
             ]),
           ),
         ],
@@ -258,9 +272,9 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
 
     Future.delayed(Duration(milliseconds: 1000), () {
       setState(() {
-        this.contactsListFuture = bitrix24.crmContactList(
-          start: 0,
-        );
+        this.contactsListFuture = widget.isSearch
+            ? bitrix24.crmContactList(start: 0, searchValue: widget.searchValue)
+            : bitrix24.crmContactList(start: 0);
       });
     });
   }
@@ -280,7 +294,9 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
   Future loadList() async {
     await Future.delayed(Duration(milliseconds: 400));
     setState(() {
-      this.contactsListFuture = bitrix24.crmContactList(start: 0);
+      this.contactsListFuture = widget.isSearch
+          ? bitrix24.crmContactList(start: 0, searchValue: widget.searchValue)
+          : bitrix24.crmContactList(start: 0);
     });
   }
 
@@ -290,10 +306,15 @@ class _ContactListViewCrmState extends State<ContactListViewCrm> {
         if (contactList.getNext == 0) {
           return;
         }
-        contactsListFuture = bitrix24.crmContactList(
-          start: contactList.getNext,
-          contactList: contactList,
-        );
+        contactsListFuture = widget.isSearch
+            ? bitrix24.crmContactList(
+                start: 0,
+                searchValue: widget.searchValue,
+                contactList: contactList)
+            : bitrix24.crmContactList(
+                start: 0,
+                contactList: contactList,
+              );
       }
     });
   }

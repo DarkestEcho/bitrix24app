@@ -1,4 +1,3 @@
-import 'package:bitrix24/components/stage_id_card_widget.dart';
 import 'package:flutter/material.dart';
 
 class ContactCard extends StatelessWidget {
@@ -52,10 +51,15 @@ class ContactCard extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                title,
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 19),
+              Row(
+                children: [
+                  Text(
+                    title.length > 22 ? title.substring(0, 20) + "..." : title,
+                    overflow: TextOverflow.visible,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 19),
+                  ),
+                ],
               ),
               Divider(
                 height: 20,

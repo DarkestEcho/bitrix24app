@@ -54,7 +54,7 @@ class DealCard extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                title,
+                title.length > 22 ? title.substring(0, 20) + "..." : title,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 19),
               ),

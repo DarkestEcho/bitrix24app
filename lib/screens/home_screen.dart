@@ -4,6 +4,7 @@ import 'package:bitrix24/components/lead_list_view_crm.dart';
 import 'package:bitrix24/components/menu_item_widget.dart';
 import 'package:bitrix24/models/menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String webhook =
@@ -38,13 +39,12 @@ class AppContainer extends StatefulWidget {
 class _AppContainerState extends State<AppContainer> {
   final searchFocusNode = FocusNode();
 
-  final List<String> menuItems = ['Лиды', 'Сделки', 'Контакты', 'Настройки'];
+  final List<String> menuItems = ['Лиды', 'Сделки', 'Контакты'];
 
   final List<String> menuIcons = [
-    'icon_home',
-    'icon_blogger',
-    'icon_add',
-    'icon_settings'
+    'icon_lead',
+    'deals',
+    'icon_contacts',
   ];
 
   bool bIsSidebarOpen = false;
@@ -249,12 +249,16 @@ class _AppContainerState extends State<AppContainer> {
             ),
           ),
           Container(
-            child: MenuItemWidget(
-              menuItem: MenuItem(
-                  itemIcon: 'icon_logout',
-                  itemText: 'Выйти',
-                  selected: selectedMenuItem,
-                  position: menuItems.length + 1),
+            child: GestureDetector(
+              onTap: () => SystemChannels.platform
+                  .invokeMethod<void>('SystemNavigator.pop', true),
+              child: MenuItemWidget(
+                menuItem: MenuItem(
+                    itemIcon: 'icon_logout',
+                    itemText: 'Выйти',
+                    selected: selectedMenuItem,
+                    position: menuItems.length + 1),
+              ),
             ),
           ),
         ],

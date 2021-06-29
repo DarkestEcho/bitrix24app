@@ -189,6 +189,7 @@ class _LeadAddPageState extends State<LeadAddPage> {
                       height: 15,
                     ),
                     getTextFormField(
+                      keyboardType: TextInputType.phone,
                       autofocus: true,
                       context: context,
                       currentFocus: _phoneFocus,

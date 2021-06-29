@@ -269,6 +269,7 @@ class _LeadViewPageState extends State<LeadViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
+                      keyboardType: TextInputType.phone,
                       value: _phoneController.text,
                       autofocus: true,
                       context: context,

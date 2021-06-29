@@ -127,6 +127,7 @@ class _ContactAddPageState extends State<ContactAddPage> {
                     ),
                     getTextFormField(
                       autofocus: true,
+                      keyboardType: TextInputType.phone,
                       context: context,
                       currentFocus: _phoneFocus,
                       nextFocus: _emailFocus,

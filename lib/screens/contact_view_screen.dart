@@ -195,6 +195,7 @@ class _ContactViewPageState extends State<ContactViewPage> {
                       height: 15,
                     ),
                     getTextFormField(
+                      keyboardType: TextInputType.phone,
                       value: _phoneController.text,
                       autofocus: true,
                       context: context,

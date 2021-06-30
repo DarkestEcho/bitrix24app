@@ -212,7 +212,7 @@ class _AppContainerState extends State<AppContainer> {
                       child: TextField(
                         controller: searchController,
                         onEditingComplete: () {
-                          print(searchController.text);
+                          FocusScope.of(context).unfocus();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
